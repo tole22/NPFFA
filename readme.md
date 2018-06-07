@@ -1,4 +1,4 @@
-# NVDA Accessibility#
+# NVDA Accessibility
 
 This Project is linked with Kobold Package Accessibility-Version
 (https://github.com/juliangrigera/Kobold/tree/accessibility-version)
