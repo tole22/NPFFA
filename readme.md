@@ -1,6 +1,6 @@
 # NVDA Accessibility#
 
-Este Proyecto esta vinculado con Kobold package Accessibility-version
+This Project is linked with Kobold Package Accessibility-Version
 (https://github.com/juliangrigera/Kobold/tree/accessibility-version)
 
 Copyright (C) 2012-2014 nvda addon team contributors.
