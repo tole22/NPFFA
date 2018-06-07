@@ -2,9 +2,9 @@
 
 Este Proyecto esta vinculado con Kobold package Accessibility-version
 (https://github.com/juliangrigera/Kobold/tree/accessibility-version)
-
+<!---
 Copyright (C) 2012-2014 nvda addon team contributors.
- <!---
+ 
 This package is distributed under the terms of the GNU General Public License, version 2 or later. Please see the file COPYING.txt for further details.
 
 ## Features
