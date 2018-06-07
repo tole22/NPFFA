@@ -1,8 +1,7 @@
-# NVDA Add-on Scons Template #
+# NVDA Accessibility#
 
-This package contains a basic template structure for NVDA add-on development, building, distribution and localization.
-For details about NVDA add-on development please see the [NVDA Developer Guide](http://www.nvda-project.org/documentation/developerGuide.html).
-The NVDA addon development/discussion list [is here](http://www.freelists.org/list/nvda-addons)
+Este Proyecto esta vinculado con Kobold package Accessibility-version
+(https://github.com/juliangrigera/Kobold/tree/accessibility-version)
 
 Copyright (C) 2012-2014 nvda addon team contributors.
 
