@@ -4,7 +4,7 @@ Este Proyecto esta vinculado con Kobold package Accessibility-version
 (https://github.com/juliangrigera/Kobold/tree/accessibility-version)
 
 Copyright (C) 2012-2014 nvda addon team contributors.
-
+ <!---
 This package is distributed under the terms of the GNU General Public License, version 2 or later. Please see the file COPYING.txt for further details.
 
 ## Features
@@ -52,3 +52,4 @@ You need the following software to use this code for your NVDA add-ons developme
 Note that this template only provides a basic add-on structure and build infrastructure. You may need to adapt it for your specific needs.
 
 If you have any issues please use the NVDA addon list mentioned above.
+-->
