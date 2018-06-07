@@ -3,14 +3,13 @@
 This Project is linked with Kobold Package Accessibility-Version
 (https://github.com/juliangrigera/Kobold/tree/accessibility-version)
 
-Copyright (C) 2012-2014 nvda addon team contributors.
  
 ## Packaging
 To package the add-on requires Scons - [Website] (http://www.scons.org/) - version 2.1.0 or higher.
 Run the scons command to get NVDA-Accessibility-1.0.nvda-addon
  
  <!---
- 
+ Copyright (C) 2012-2014 nvda addon team contributors.
 This package is distributed under the terms of the GNU General Public License, version 2 or later. Please see the file COPYING.txt for further details.
 
 ## Features
