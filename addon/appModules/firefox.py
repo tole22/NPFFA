@@ -7,7 +7,7 @@ from nvdaBuiltin.appModules import firefox
 from NVDAObjects.IAccessible.mozilla import Dialog, IAccessible
 import addonHandler
 import scriptHandler
-import globalCommands
+import globalCommands.commands
 import controlTypes
 import api
 import ui
@@ -20,6 +20,7 @@ from datetime import datetime
 from threading import Timer
 import shared
 import browseMode
+from conexiones.eventoAccesibility import navigationByKey
 
 addonHandler.initTranslation()
 
@@ -30,48 +31,12 @@ class AppModule(firefox.AppModule):
 	#sleepMode = True
 
 	#TRANSLATORS: category for Firefox input gestures
-	scriptCategory = _("mozilla Firefox")
-		
-	def event_caret(self, obj, nextHandler):#self:insciad de AppModuel, obj: objeto nvda donde activo evetno, nextHandler: funcion que propaga el even
-                try:
-                 	#ui.message("evento: Caret move")
-                  	#self.activatePosition()
-                  	focus = api.getFocusObject()
-                  	vbuf=focus.treeInterceptor
-                  	#ui.message("Modo de navegacion")
-                  	if not vbuf.passThrough:
-                  		ui.message("Desplazamiento en navegacion")
-                  		#obt=browseMode.currentNVDAObject
-                  		#speech.speakObject(obt)
-                  	foco=api.getFocusObject()
-                   	navegador=api.getNavigatorObject()
-                 	if foco!=navegador:
-                		ui.message("son distintos")
-                		ui.message("evento: Caret move")
-                 	if obj.role != controlTypes.ROLE_TABLE:
-                  		tones.beep(256, 200)
-                  		ui.message("el objeto foco es: ")
-                  		speech.speakObject(foco)
-                		ui.message("el navedado es: ")
-                  		speech.speakObject(navegador)
-                  		ui.message("el objeto es")
-                  		speech.speakObject(obj)
-                  		ui.message("El self es")
-                  		speeck.speakObject(self)
-                	   	speech.cancelSpeech
-                except:
-                	pass
-                nextHandler()
-
-	def event_liveRegionChange(self, obj, nextHandler):
-		ui.message("navigator")
-		speech.speakObject(obj)
-		ui.sessage("el self es")
-		speech.speakObject(self)
-		nextHandler()
-
- 	def event_treeInterceptor_gainFocus(self):
- 		ui.message("Ganaste foco")
+	scriptCategory = _("mozilla Firefox")	
+ 	
+ 	def ignorar_gesto(self,gesto):
+ 		ui.message("reenviar")
+		api.getFocusObject().treeInterceptor.script_collapseOrExpandControl(gesto)
+ 		
  	
  	def modoNavegacion(self):
  		focus = api.getFocusObject()
@@ -80,35 +45,195 @@ class AppModule(firefox.AppModule):
 			return False
 		return True
 		
+ 	def script_nav_prox_header(self, gesture):
+		try:
+			obj=api.getNavigatorObject().treeInterceptor
+			if self.modoNavegacion():
+				ui.message("Presionaste h")
+				browseMode.BrowseModeTreeInterceptor.script_nextHeading(obj,gesture)
+			else:
+				self.ignorar_gesto(gesture)
+		except:
+			ui.message("Error")
+		
+	def script_nav_previous_header(self, gesture):
+		try:
+			if self.modoNavegacion():
+				ui.message("Presionaste shift + h")
+				obj=api.getNavigatorObject().treeInterceptor
+				browseMode.BrowseModeTreeInterceptor.script_previousHeading(obj,gesture)
+			else:	
+				self.ignorar_gesto(gesture)
+		except:
+			ui.message("Error") 	
+ 	
+	def script_nav_prox_table(self,gesture):
+		try:
+			if self.modoNavegacion():
+				ui.message("Presionaste t")
+				obj=api.getNavigatorObject().treeInterceptor
+				browseMode.BrowseModeTreeInterceptor.script_nextTable(obj,gesture)
+			else:
+				self.ignorar_gesto(gesture)
+		except:
+			ui.message("Error")
+			
+	def script_nav_previous_table(self,gesture):
+		try:
+			if self.modoNavegacion():
+				ui.message("Presionaste shift + t")
+				obj=api.getNavigatorObject().treeInterceptor
+				browseMode.BrowseModeTreeInterceptor.script_previousTable(obj,gesture)
+			else:
+				self.ignorar_gesto(gesture)
+		except:
+			ui.message("Error")
+			
+	def script_nav_prox_list(self,gesture):
+		try:
+			if self.modoNavegacion():
+				ui.message("Presionaste l")
+				obj=api.getNavigatorObject().treeInterceptor
+				browseMode.BrowseModeTreeInterceptor.script_nextList(obj,gesture)
+			else:
+				self.ignorar_gesto(gesture)
+		except:
+			ui.message("Error")
+ 	
+	def script_nav_previous_list(self,gesture):
+		try:
+			if self.modoNavegacion():
+				#focus = api.getFocusObject()
+				ui.message("Presionaste Shift + l")
+				obj=api.getNavigatorObject().treeInterceptor
+				browseMode.BrowseModeTreeInterceptor.script_previousList(obj,gesture)
+			else:
+				self.ignorar_gesto(gesture)
+		except:
+			ui.message("Error")
+			
+	def script_nav_prox_linc(self,gesture):
+		try:
+			if self.modoNavegacion():
+				#focus = api.getFocusObject()
+				ui.message("Presionaste k")
+				obj=api.getNavigatorObject().treeInterceptor
+				browseMode.BrowseModeTreeInterceptor.script_nextLink(obj,gesture)
+			else:
+				self.ignorar_gesto(gesture)	
+		except:
+			ui.message("Error")
+			
+ 	def script_nav_previous_linc(self,gesture):
+		try:
+			if self.modoNavegacion():
+				#focus = api.getFocusObject()
+				ui.message("Presionaste Shift + k")
+				obj=api.getNavigatorObject().treeInterceptor
+				browseMode.BrowseModeTreeInterceptor.script_previousList(obj,gesture)
+			else:
+				self.ignorar_gesto(gesture)	
+		except:
+			ui.message("Error")
+			
+	def script_nav_prox_FromField(self,gesture):
+		try:
+			if self.modoNavegacion():
+				#focus = api.getFocusObject()
+				ui.message("Presionaste e")
+				obj=api.getNavigatorObject().treeInterceptor
+				browseMode.BrowseModeTreeInterceptor.script_nextFormField(obj,gesture)
+			else:
+				self.ignorar_gesto(gesture)	
+		except:
+			ui.message("Error")
+			
+	def script_nav_previous_FromField(self,gesture):
+		try:
+			if self.modoNavegacion():
+				#focus = api.getFocusObject()
+				ui.message("Presionaste shift + e")
+				obj=api.getNavigatorObject().treeInterceptor
+				browseMode.BrowseModeTreeInterceptor.script_previousFormField(obj,gesture)
+			else:
+				self.ignorar_gesto(gesture)
+		except:
+			ui.message("Error")
+
+ 	def script_nav_prox_Frame(self,gesture):
+		try:
+			if self.modoNavegacion():
+				#focus = api.getFocusObject()
+				ui.message("Presionaste m")
+				obj=api.getNavigatorObject().treeInterceptor
+				browseMode.BrowseModeTreeInterceptor.script_nextFrame(obj,gesture)
+			else:
+				self.ignorar_gesto(gesture)	
+		except:
+			ui.message("Error")
+ 	
+ 	def script_nav_previous_Frame(self,gesture):
+		try:
+			if self.modoNavegacion():
+				#focus = api.getFocusObject()
+				ui.message("Presionaste shift + m")
+				obj=api.getNavigatorObject().treeInterceptor
+				browseMode.BrowseModeTreeInterceptor.script_previousFrame(obj,gesture)
+			else:
+				self.ignorar_gesto(gesture)	
+		except:
+			ui.message("Error")
+			
+	def script_nav_next_unvisitedLink(self,gesture):
+		try:
+			if self.modoNavegacion():
+				#focus = api.getFocusObject()
+				ui.message("Presionaste u")
+				commands.script_navigatorObject_nextInFlow(gesture)
+			else:
+				self.ignorar_gesto(gesture)		
+		except:
+			ui.message("Error")
+ 	
+ 	def script_nav_previous_unvisitedLink(self,gesture):
+		try:
+			if self.modoNavegacion():
+				#focus = api.getFocusObject()
+				ui.message("Presionaste shift + u")
+				command.script_navigatorObject_previousInFlow(gesture)
+			else:
+				self.ignorar_gesto(gesture)		
+		except:
+			ui.message("Error")
+ 	
  	def script_status(self, gesture):
 		try:
-			#Averigua si el modo de navegacion esta activodo
 			focus = api.getFocusObject()
 			vbuf=focus.treeInterceptor
 			ui.message("Modo de navegacion")
-			if not vbuf.passThrough:
+			if self.modoNavegacion():
 				ui.message("Activado")
 			else:
 				ui.message("Desactivado")
-				#ver vbuf.getScript("kb:b")
-			#browseMode.reportPassThrough
-			#ui.message(_("Gesto capturado"))
 		except:
 			ui.message("Error")
 	#TRANSLATORS: message shown in Input gestures dialog for this script
 	script_status.__doc__ = _("Reads the status bar. If pressed twice quickly, copies it to clipboard.")
 	
 	__gestures = {
-		"kb(desktop):NVDA+End": "status",
-		"kb(laptop):NVDA+Shift+End": "status",
-		"kb:NVDA+F8": "status",
-		"kb(desktop):NVDA+A": "status",
-		"kb(laptop):NVDA+Control+A": "status",
-		"kb:NVDA+Control+N": "status",
-		"kb:tt": "status",#ir a proximo encabezado
-		"kb:l": "status",#ir a proxima lista
-		"kb:i": "status",#ir a proximo elemento de lista
-		"kb:i": "status",#ir a proxima tabla
-		"kb:b": "status",#ir a proxima tabla
+		"kb:h": "nav_prox_header",
+		"kb:shift+h": "nav_previous_header",
+		"kb:t": "nav_prox_table",
+		"kb:shift+t": "nav_previous_table",
+		"kb:l": "nav_prox_list",
+		"kb:shift+l": "nav_previous_list",
+		"kb:k": "nav_prox_linc",
+		"kb:shift+k": "nav_previous_linc",
+		"kb:e": "nav_prox_FromField",
+		"kb:shift+e": "nav_previous_FromField",
+		"kb:m": "nav_prox_Frame",
+		"kb:shift+m": "nav_previous_Frame",
+		"kb:u": "nav_next_unvisitedLink",
+		"kb:shift+u": "nav_previous_unvisitedLink",
 		"kb:o": "status"
 	}
