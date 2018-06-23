@@ -9,7 +9,24 @@ To package the add-on requires Scons - [Website] (http://www.scons.org/) - versi
 Run the scons command to get NVDA-Accessibility-1.0.nvda-addon
 
 ## Captured gestures
-
+ 
+ __gestures = {
+		"kb:h": "nav_prox_header",
+		"kb:shift+h": "nav_previous_header",
+		"kb:t": "nav_prox_table",
+		"kb:shift+t": "nav_previous_table",
+		"kb:l": "nav_prox_list",
+		"kb:shift+l": "nav_previous_list",
+		"kb:k": "nav_prox_linc",
+		"kb:shift+k": "nav_previous_linc",
+		"kb:e": "nav_prox_FromField",
+		"kb:shift+e": "nav_previous_FromField",
+		"kb:m": "nav_prox_Frame",
+		"kb:shift+m": "nav_previous_Frame",
+		"kb:u": "nav_next_unvisitedLink",
+		"kb:shift+u": "nav_previous_unvisitedLink",
+		"kb:o": "status"
+	}
  
  <!---
  Copyright (C) 2012-2014 nvda addon team contributors.
