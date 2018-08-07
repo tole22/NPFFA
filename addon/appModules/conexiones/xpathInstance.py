@@ -15,4 +15,13 @@ class xpathInstance(object):
         '''
     
     def getElementByXpath(self,path):
-        pass 
+        pass
+    
+    def getElementTreeXPath(self,element):
+        pass
+    
+    def getElementXPath(self,element):
+        if element:
+            if element.IA2Attributes["id"]:
+                return '//*[@id="'+element.IA2Attributes["id"]+'"]'
+        return self.getElementTreeXPath(element)

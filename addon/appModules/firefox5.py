@@ -29,7 +29,7 @@ from conexiones import logger
 from conexiones import finders
 import configPlugin
 import sys
-#from conexiones import parser
+from conexiones import parser
 
 addonHandler.initTranslation()
 
@@ -38,15 +38,11 @@ class AppModule(firefox.AppModule):
 	finders=[]
 	event=[]
 	def event_NVDAObject_init(self,obj):
-		try:
-			#ui.message("Iniciando configuracion")
-			sys.path.append('C:\\Python27\\Lib')
-			if obj.role == controlTypes.ROLE_WINDOW:
-				self.finders=[]
-				self.finders.append(finders.finder_NavigationBetweenHeader("Buscador de Header"))
-				self.finders.append(finders.finder_NavigationBetweenList("Buscador de listas"))
-		except:
-			ui.message("Error en init")
+		sys.path.append('C:\\Python27\\Lib')
+		if obj.role == controlTypes.ROLE_WINDOW:
+			self.finders=[]
+			self.finders.append(finders.finder_NavigationBetweenHeader("Buscador de Header"))
+			self.finders.append(finders.finder_NavigationBetweenList("Buscador de listas"))
 	
 	def ignorar_gesto(self, gesto):
  		api.getFocusObject().treeInterceptor.script_collapseOrExpandControl(gesto)
@@ -57,36 +53,34 @@ class AppModule(firefox.AppModule):
 	
 	def event_gainFocus(self, obj, nextHandler):
 		try:
-			#if obj.role==controlTypes.ROLE_DOCUMENT:
-			#	ui.message("obj.role")
-			#	ui.message(str(obj.__class__.__name__))
-			#if obj.role==controlTypes.ROLE_APPLICATION:
-			#	ui.message("rol aplicacion")
-			#url="http://"+self.getUrl()
-			#pagina=parser.parser(url)
-			ui.message("cargando configuracion")
-			#self.server=pagina.getServer()
-			#self.token=pagina.getToken()
-			self.url=""
-			self.server="192.168.1.110:8080"
-			self.token="gfgdfdf"
-			ui.message("cargando configuracion")
+			ui.message("Nombre de producto")
+			#ui.message(self.productName)
+			#ui.message(self.appModuleName)
+			#speech.cancelSpeech()
+			if obj.role==controlTypes.ROLE_DOCUMENT:
+				ui.message("obj.role")
+				ui.message(str(obj.__class__.__name__))
+			if obj.role==controlTypes.ROLE_APPLICATION:
+				ui.message("rol aplicacion")
+			pagina=parser.parser('http://192.168.1.110/accesibilidad2/modonavegacion.php')
+			#ui.message(self.pagina.getPagina())
+			#self.server=configPlugin.getServer()
+			#self.token= configPlugin.getToken()
+			self.server=pagina.getServer()
+			self.token=pagina.getToken()
 			self.logger=logger.logger(self.server, self.token, False)
-			nextHandler()
 		except:
-			ui.message("Error en goin focus")						
-		
+			ui.message("Error")						
+		nextHandler()
+
  	def modoNavegacion(self):
- 		try:
- 			focus = api.getFocusObject()
- 			vbuf=focus.treeInterceptor
- 			if vbuf.passThrough:
- 				return False
- 			return True
- 	 	except:
-			ui.message("Error modo navegacion")
- 		
- 	def newEvent(self,event):
+ 		focus = api.getFocusObject()
+		vbuf=focus.treeInterceptor
+		if vbuf.passThrough:
+			return False
+		return True
+	
+	def newEvent(self,event):
 		'''compara antes de agregar el evetno lo compara con el ultimo recibido
 		si son iguales no se produjo navegacion
 		caso contrario lo agrega a la lista
@@ -119,8 +113,7 @@ class AppModule(firefox.AppModule):
 				ui.message("Objeto Navegado")
 				objNavegado=api.getNavigatorObject()
 				speech.speakObject(objNavegado)
-				ui.message("Creando evento")
-				evento=eventoAccesibility.NavigationByKeyH("NavigationByKeyH", objFoco, objNavegado, self.event, self.url)
+				evento=eventoAccesibility.NavigationByKeyH("NavigationByKeyH", objFoco, objNavegado, self.event)
 				self.newEvent(evento)
 			else:
 				self.ignorar_gesto(gesture)
@@ -158,13 +151,24 @@ class AppModule(firefox.AppModule):
 				objFoco=api.getFocusObject()
 				ui.message("Objeto Navegado")
 				objNavegado=api.getNavigatorObject()
-				evento=eventoAccesibility.NavigationByKeyL("NavigationByKeyL", objFoco, objNavegado, self.event, self.url)
+				evento=eventoAccesibility.NavigationByKeyL("NavigationByKeyL", objFoco, objNavegado, self.event)
 				self.newEvent(evento)
 			else:
 				self.ignorar_gesto(gesture)
 		except:
 			ui.message("Error")		
 	
+	def script_nav_previous_header(self, gesture):
+		try:
+			if self.modoNavegacion():
+				ui.message("Presionaste shift + h")
+				obj=api.getNavigatorObject().treeInterceptor
+				browseMode.BrowseModeTreeInterceptor.script_previousHeading(obj,gesture)
+			else:	
+				self.ignorar_gesto(gesture)
+		except:
+			ui.message("Error")
+
  	def script_config(self, gesture):
  			try:
  				token=configPlugin.getToken()
@@ -191,10 +195,6 @@ class AppModule(firefox.AppModule):
 			self.finderEvent(self.finders, self.event)
 		except:
 			ui.message("Error")
-			
-	def script_url(self, gesture):
-		ui.message("url es: ")
-		#ui.message(self.getUrl())
 	
 	__gestures = {
 		"kb:h": "nav_prox_header",
@@ -206,6 +206,6 @@ class AppModule(firefox.AppModule):
 		"kb:t": "config",
 		"kb:1": "nav_prox_headerH1",
 		"kb:l": "nav_prox_list",
-		"kb:i": "url",
 		"kb:o": "status"
 	}
+

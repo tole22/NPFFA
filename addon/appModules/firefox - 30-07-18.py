@@ -29,7 +29,7 @@ from conexiones import logger
 from conexiones import finders
 import configPlugin
 import sys
-#from conexiones import parser
+from conexiones import parser
 
 addonHandler.initTranslation()
 
@@ -39,7 +39,6 @@ class AppModule(firefox.AppModule):
 	event=[]
 	def event_NVDAObject_init(self,obj):
 		try:
-			#ui.message("Iniciando configuracion")
 			sys.path.append('C:\\Python27\\Lib')
 			if obj.role == controlTypes.ROLE_WINDOW:
 				self.finders=[]
@@ -57,19 +56,18 @@ class AppModule(firefox.AppModule):
 	
 	def event_gainFocus(self, obj, nextHandler):
 		try:
-			#if obj.role==controlTypes.ROLE_DOCUMENT:
-			#	ui.message("obj.role")
-			#	ui.message(str(obj.__class__.__name__))
-			#if obj.role==controlTypes.ROLE_APPLICATION:
-			#	ui.message("rol aplicacion")
+			if obj.role==controlTypes.ROLE_DOCUMENT:
+				ui.message("obj.role")
+				ui.message(str(obj.__class__.__name__))
+			if obj.role==controlTypes.ROLE_APPLICATION:
+				ui.message("rol aplicacion")
 			#url="http://"+self.getUrl()
 			#pagina=parser.parser(url)
 			ui.message("cargando configuracion")
 			#self.server=pagina.getServer()
 			#self.token=pagina.getToken()
-			self.url=""
-			self.server="192.168.1.110:8080"
-			self.token="gfgdfdf"
+			self.server="192.168.10.1"
+			self.token=""
 			ui.message("cargando configuracion")
 			self.logger=logger.logger(self.server, self.token, False)
 			nextHandler()
@@ -119,7 +117,6 @@ class AppModule(firefox.AppModule):
 				ui.message("Objeto Navegado")
 				objNavegado=api.getNavigatorObject()
 				speech.speakObject(objNavegado)
-				ui.message("Creando evento")
 				evento=eventoAccesibility.NavigationByKeyH("NavigationByKeyH", objFoco, objNavegado, self.event, self.url)
 				self.newEvent(evento)
 			else:
@@ -165,6 +162,17 @@ class AppModule(firefox.AppModule):
 		except:
 			ui.message("Error")		
 	
+	def script_nav_previous_header(self, gesture):
+		try:
+			if self.modoNavegacion():
+				ui.message("Presionaste shift + h")
+				obj=api.getNavigatorObject().treeInterceptor
+				browseMode.BrowseModeTreeInterceptor.script_previousHeading(obj,gesture)
+			else:	
+				self.ignorar_gesto(gesture)
+		except:
+			ui.message("Error")
+
  	def script_config(self, gesture):
  			try:
  				token=configPlugin.getToken()
@@ -194,7 +202,7 @@ class AppModule(firefox.AppModule):
 			
 	def script_url(self, gesture):
 		ui.message("url es: ")
-		#ui.message(self.getUrl())
+		ui.message(self.getUrl())
 	
 	__gestures = {
 		"kb:h": "nav_prox_header",
@@ -209,3 +217,66 @@ class AppModule(firefox.AppModule):
 		"kb:i": "url",
 		"kb:o": "status"
 	}
+
+	def searchObject(self, path):
+		obj = api.getForegroundObject()
+		for milestone in path:
+			obj = self.searchAmongTheChildren(milestone, obj)
+			if not obj:
+				return
+		return obj
+
+	def searchAmongTheChildren(self, id, into):
+		if not into:
+			return(None)
+		key, value = id
+		obj = into.firstChild
+		if key in obj.IA2Attributes.keys():
+			if obj.IA2Attributes[key] == value:
+				return(obj)
+		while obj:
+			if key in obj.IA2Attributes.keys():
+				if obj.IA2Attributes[key] == value:
+					break
+			obj = obj.next
+		return(obj)
+	
+	def getUrl(self):
+		if not self.inMainWindow():
+			#TRANSLATORS: message spoken by NVDA when the focus is not in the main Firefox window
+			ui.message(_("Not available here"))
+			return
+		path = (("id", "nav-bar"), ("id", "urlbar"), ("id", "identity-box",))
+		secInfoButton = self.searchObject(path)
+		if secInfoButton:
+			securInfo = secInfoButton.description # This has changed in FF 57. Keeping this line for compatibility with earlier versions.
+			try: # This one is for FF 57 and later.
+				securInfo = secInfoButton.firstChild.next.name if secInfoButton.firstChild.next.IA2Attributes["id"] == "connection-icon" else ""
+				if securInfo:
+					owner = " ".join([o.name for o in filter(lambda o: o.role == controlTypes.ROLE_STATICTEXT, secInfoButton.recursiveDescendants)])
+					securInfo = "%s, %s" % (owner, securInfo) if owner else securInfo
+			except:
+				pass
+			#TRANSLATORS: this connection is using http, not https
+			securInfo  = _("Insecure connection") if not securInfo   else securInfo  
+			url = secInfoButton.next.value
+			#ui.message("%s (%s)" % (url, securInfo))
+			self.url=url
+			return url
+			if scriptHandler.getLastScriptRepeatCount() == 1:
+				if api.copyToClip(url):
+					#TRANSLATORS: message spoken when an item hast just been copied to the clipboard
+					ui.message(_("Copied to clipboard"))
+			return
+		#TRANSLATORS: message spoken when addres bar could not be found
+		ui.message (_("Address not found"))
+		
+	def inMainWindow(self):
+		try:
+			if api.getForegroundObject().IA2Attributes["id"] != "main-window":
+				return False
+		except (AttributeError, KeyError):
+			return False
+		return True
+
+	
