@@ -21,15 +21,16 @@ import wx
 import tones
 from datetime import datetime
 from threading import Timer
-import shared
 import textInfos
 import browseMode
 from conexiones import eventoAccesibility
 from conexiones import logger
 from conexiones import finders
+#from conexiones import pagina
+#from conf import configuracion
 import configPlugin
 import sys
-#from conexiones import parser
+from conexiones import parser
 
 addonHandler.initTranslation()
 
@@ -39,12 +40,12 @@ class AppModule(firefox.AppModule):
 	event=[]
 	def event_NVDAObject_init(self,obj):
 		try:
+			x=1
 			#ui.message("Iniciando configuracion")
-			sys.path.append('C:\\Python27\\Lib')
-			if obj.role == controlTypes.ROLE_WINDOW:
-				self.finders=[]
-				self.finders.append(finders.finder_NavigationBetweenHeader("Buscador de Header"))
-				self.finders.append(finders.finder_NavigationBetweenList("Buscador de listas"))
+			#if obj.role == controlTypes.ROLE_WINDOW:
+			#	self.finders=[]
+			#	self.finders.append(finders.finder_NavigationBetweenHeader("Buscador de Header"))
+			#	self.finders.append(finders.finder_NavigationBetweenList("Buscador de listas"))
 		except:
 			ui.message("Error en init")
 	
@@ -57,24 +58,32 @@ class AppModule(firefox.AppModule):
 	
 	def event_gainFocus(self, obj, nextHandler):
 		try:
-			#if obj.role==controlTypes.ROLE_DOCUMENT:
-			#	ui.message("obj.role")
-			#	ui.message(str(obj.__class__.__name__))
-			#if obj.role==controlTypes.ROLE_APPLICATION:
-			#	ui.message("rol aplicacion")
-			#url="http://"+self.getUrl()
-			#pagina=parser.parser(url)
-			ui.message("cargando configuracion")
-			#self.server=pagina.getServer()
-			#self.token=pagina.getToken()
-			self.url=""
-			self.server="192.168.1.110:8080"
-			self.token="gfgdfdf"
-			ui.message("cargando configuracion")
-			self.logger=logger.logger(self.server, self.token, False)
+			ui.message("Cargar configuracion")
+			#Carga los Buscadores y la configuracon
+			if obj.role==controlTypes.ROLE_FRAME:
+				sys.path.append('C:\\Python27\\Lib')
+				self.finders=[]
+				self.finders.append(finders.finder_NavigationBetweenHeader("Buscador de Header"))
+				self.finders.append(finders.finder_NavigationBetweenList("Buscador de listas"))
+				self.script_url('u')
+				ui.message(self.url)
+				url="http://"+self.url
+				pagina=parser.parser(url)
+				ui.message("url")
+				ui.message(url)
+				ui.message("Direccion server")
+				server=pagina.getServer()
+				ui.message(server)
+				token=pagina.getToken()
+				ui.message("token")
+				ui.message(token)
+				self.server=server
+				self.token=token
+				ui.message("cargando Logger")
+				self.logger=logger.logger(self.server, self.token, False)
 			nextHandler()
 		except:
-			ui.message("Error en goin focus")						
+			ui.message("Error en gain focus")						
 		
  	def modoNavegacion(self):
  		try:
@@ -193,8 +202,60 @@ class AppModule(firefox.AppModule):
 			ui.message("Error")
 			
 	def script_url(self, gesture):
-		ui.message("url es: ")
-		#ui.message(self.getUrl())
+		if not self.inMainWindow():
+			#TRANSLATORS: message spoken by NVDA when the focus is not in the main Firefox window
+			ui.message(_("Not available here"))
+			return
+		path = (("id", "nav-bar"), ("id", "urlbar"), ("id", "identity-box",))
+		secInfoButton = self.searchObject(path)
+		if secInfoButton:
+			securInfo = secInfoButton.description # This has changed in FF 57. Keeping this line for compatibility with earlier versions.
+			try: # This one is for FF 57 and later.
+				securInfo = secInfoButton.firstChild.next.name if secInfoButton.firstChild.next.IA2Attributes["id"] == "connection-icon" else ""
+				if securInfo:
+					owner = " ".join([o.name for o in filter(lambda o: o.role == controlTypes.ROLE_STATICTEXT, secInfoButton.recursiveDescendants)])
+					securInfo = "%s, %s" % (owner, securInfo) if owner else securInfo
+			except:
+				pass
+			#TRANSLATORS: this connection is using http, not https
+			securInfo  = _("Insecure connection") if not securInfo   else securInfo  
+			url = secInfoButton.next.value
+			#ui.message("direccion")
+			self.url=url
+			#ui.message(self.url)
+			#ui.message("%s (%s)" % (url, securInfo))
+		#ui.message (_("Direccion No Disponible"))
+		
+	def searchObject(self, path):
+		obj = api.getForegroundObject()
+		for milestone in path:
+			obj = self.searchAmongTheChildren(milestone, obj)
+			if not obj:
+				return
+		return obj
+
+	def searchAmongTheChildren(self, id, into):
+		if not into:
+			return(None)
+		key, value = id
+		obj = into.firstChild
+		if key in obj.IA2Attributes.keys():
+			if obj.IA2Attributes[key] == value:
+				return(obj)
+		while obj:
+			if key in obj.IA2Attributes.keys():
+				if obj.IA2Attributes[key] == value:
+					break
+			obj = obj.next
+		return(obj)
+	
+	def inMainWindow(self):
+		try:
+			if api.getForegroundObject().IA2Attributes["id"]!="main-window":
+				return False
+		except (AttributeError, KeyError):
+				return False
+		return True	
 	
 	__gestures = {
 		"kb:h": "nav_prox_header",
@@ -206,6 +267,7 @@ class AppModule(firefox.AppModule):
 		"kb:t": "config",
 		"kb:1": "nav_prox_headerH1",
 		"kb:l": "nav_prox_list",
-		"kb:i": "url",
+		"kb:u": "url",
 		"kb:o": "status"
 	}
+	
