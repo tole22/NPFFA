@@ -61,7 +61,10 @@ class AppModule(firefox.AppModule):
 			ui.message("Cargar configuracion")
 			#Carga los Buscadores y la configuracon
 			if obj.role==controlTypes.ROLE_FRAME:
-				sys.path.append('C:\\Python27\\Lib')
+				ui.message("dir python")
+				ui.message(configPlugin.getDirPython())
+				dirPython=configPlugin.getDirPython()
+				sys.path.append(dirPython)
 				self.finders=[]
 				self.finders.append(finders.finder_NavigationBetweenHeader("Buscador de Header"))
 				self.finders.append(finders.finder_NavigationBetweenList("Buscador de listas"))

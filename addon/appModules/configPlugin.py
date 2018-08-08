@@ -14,6 +14,9 @@ def getToken():
 def getServer():
 	return conf().getServer()
 
+def getDirPython():
+	return conf().getDirPython()
+
 def directorio():
 	#return abspath(getsourcefile(lambda:0))
 	return os.path.dirname(os.path.abspath(__file__))
@@ -37,12 +40,19 @@ class conf():
 			valor=line.split()
 			if valor[0]=="token":
 				return valor[2]
+				break
+			
+	def getDirPython(self):
+		for line in self.lines:
+			valor=line.split()
+			if valor[0]=="python":
+				return valor[2]
 				break	
 	
 		
 if __name__ == '__main__':
 	#print os.path.dirname(os.path.abspath(__file__))
-	print "Server: ",getServer()," - Token: ",getToken()
+	print "Server: ",getServer()," - Token: ",getToken()," - Dir Python:",getDirPython()
 	print conf().file
 	folder=os.path.dirname(os.path.abspath(__file__))+"\conf\\readDatos.py"
 	print folder
