@@ -5,6 +5,12 @@
 #Preferencias/Opciones de Cursor de Revision seguir foco del sistema=false
 #Preferencia /modo navegagacion/todo focos =false
 
+def getFinders():
+	finders=[]
+	finders.append(Finder(""))
+	finders.append(Finder(""))
+	return finders
+	
 class Finder(object):
     '''
     classdocs
@@ -14,9 +20,14 @@ class Finder(object):
         Constructor
         '''
         self.name=name
+        
+    def __str__(self, *args, **kwargs):
+        cadena="name: " + self.name
+        return cadena
     
     def getElementByXpath(self,path):
         pass 
 
 if __name__== '__main__':
-	x=Finder("Buscador")
+	x=getFinders()
+	print(x)

@@ -23,11 +23,10 @@ from datetime import datetime
 from threading import Timer
 import textInfos
 import browseMode
-from conexiones import eventoAccesibility
+from finders import eventoAccesibility
 from conexiones import logger
-from conexiones import finders
-#from finders import NavHeader
-#from finders import NavList
+#from conexiones import finders
+import finders
 import configPlugin
 import sys
 from conexiones import parser
@@ -54,6 +53,8 @@ class AppModule(firefox.AppModule):
  		
 	def finderEvent(self,finderEvent,listEvent):
 		for finder in finderEvent:
+			#ui.message("finder.name")
+			#finder.funciona()
 			finder.approbes(listEvent,self.logger)
 	
 	def event_gainFocus(self, obj, nextHandler):
@@ -66,8 +67,9 @@ class AppModule(firefox.AppModule):
 				dirPython=configPlugin.getDirPython()
 				sys.path.append(dirPython)
 				self.finders=[]
-				self.finders.append(finders.finder_NavigationBetweenHeader("Buscador de Header"))
-				self.finders.append(finders.finder_NavigationBetweenList("Buscador de listas"))
+				self.finders=finders.getFinders()
+				#self.finders.append(finders.finder_NavigationBetweenHeader("Buscador de Header"))
+				#self.finders.append(finders.finder_NavigationBetweenList("Buscador de listas"))
 				#self.finders.append(NavHeader.Finder("Buscador de Header"))
 				#self.finders.append(NavList.Finder("Buscador de listas"))
 				self.script_url('u')
@@ -118,6 +120,7 @@ class AppModule(firefox.AppModule):
 					ui.message("no iguales")
 			if not equivalent:
 				self.event.append(event)
+				ui.message("evento agregado")
 		except:
 			ui.message("Error al cargar evento")	
 	

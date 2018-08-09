@@ -4,11 +4,8 @@
 #Copyright (C) 2018 Fernando Durgam <fdurgam@gmail.com>
 #Preferencias/Opciones de Cursor de Revision seguir foco del sistema=false
 #Preferencia /modo navegagacion/todo focos =false
-import urllib
-import ui
-import api
-import speech
-from eventoAccesibility import *
+from eventoAccesibility import NavigationByKeyH
+from eventoAccesibility import NavigationByKeyL
 import finder
 class Finder(finder.Finder):
     def __init__(self, name):
@@ -17,12 +14,12 @@ class Finder(finder.Finder):
     def approbes(self, listEvent, logger):
         try:
             for event in reversed(listEvent):
-                ui.message("finde h")
+                print("Procesando evento")
                 if isinstance(event,NavigationByKeyH):
-                    ui.message("Objeto Foco")
+                    print("Es instancia")
                     (leftf,topf,widthf,heightf)=event.foco.location
                     #speech.speakObject(event.foco)
-                    ui.message("Objeto navegado")
+                    #ui.message("Objeto navegado")
                     (left,top,width,height)=event.navegado.location
                     #ui.message("Absolutas")
                     (deskLeft,deskTop,deskWidth,deskHeight)=api.getDesktopObject().location
@@ -32,15 +29,18 @@ class Finder(finder.Finder):
                     logger.logEven('NavigationByKeyH',params,False)
                     #ui.message("enviando")
                 else:
-                    ui.message("No es instnacia")
+                    print("No instnacia")
         except:
-            x=1
-            ui.message("Error al  Procesar finder NavigationByKeyH")
+            print("Error")
+
             
     def funciona(self):
         ui.message("funciona")
 
 if __name__== '__main__':
+    x=Finder("Buscador de H")
     eventos=[]
     eventos.append(NavigationByKeyH(x,"nombre","foco","obj","www.google.com"))
     eventos.append(NavigationByKeyL(x,"nombre","foco","obj","www.google.com"))
+    x.approbes(eventos, "")
+    
