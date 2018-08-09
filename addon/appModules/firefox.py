@@ -26,8 +26,8 @@ import browseMode
 from conexiones import eventoAccesibility
 from conexiones import logger
 from conexiones import finders
-#from conexiones import pagina
-#from conf import configuracion
+#from finders import NavHeader
+#from finders import NavList
 import configPlugin
 import sys
 from conexiones import parser
@@ -68,6 +68,8 @@ class AppModule(firefox.AppModule):
 				self.finders=[]
 				self.finders.append(finders.finder_NavigationBetweenHeader("Buscador de Header"))
 				self.finders.append(finders.finder_NavigationBetweenList("Buscador de listas"))
+				#self.finders.append(NavHeader.Finder("Buscador de Header"))
+				#self.finders.append(NavList.Finder("Buscador de listas"))
 				self.script_url('u')
 				ui.message(self.url)
 				url="http://"+self.url
