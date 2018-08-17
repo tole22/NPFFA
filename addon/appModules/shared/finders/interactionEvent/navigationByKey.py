@@ -5,8 +5,6 @@
 #Preferencias/Opciones de Cursor de Revision seguir foco del sistema=false
 #Preferencia /modo navegagacion/todo focos =false
 from eventoInteraccion import evento
-
-
 class NavigationByKey(evento):
     '''
     constructor

@@ -49,7 +49,7 @@ class NavigationByKey(eventoInteraccion):
         return self.logger
         
 class NavigationByKeyH(NavigationByKey):
-    def __init__(self, name, foco, navegado, listEvent,url):
+    def __init__(self, name, foco, navegado, listEvent, url):
         '''
         Constructor
         '''
@@ -70,7 +70,7 @@ class NavigationByKeyL(NavigationByKey):
 if __name__== '__main__':
    # miLogger=logger.logger("",",","","")
     nw=NavigationByKey("NavigatorByKEyH","initialTop","navegado")
-    nh=NavigationByKeyH("PressH","foco","navegado","")
+    nh=NavigationByKeyH("PressH","foco","navegado","lista","url")
     print nw.__str__()
     print nh.__str__()
     print str(nh._get_objNavegado())

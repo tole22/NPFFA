@@ -4,8 +4,8 @@
 #Copyright (C) 2018 Fernando Durgam <fdurgam@gmail.com>
 #Preferencias/Opciones de Cursor de Revision seguir foco del sistema=false
 #Preferencia /modo navegagacion/todo focos =false
-import NavigationByKey
-class NavigationByKeyH(NavigationByKey.NavigationByKey):
+from NavigationByKey import NavigationByKey
+class NavigationByKeyH1(NavigationByKey):
     def __init__(self, name, foco, navegado, url):
         '''
         Constructor
@@ -15,7 +15,9 @@ class NavigationByKeyH(NavigationByKey.NavigationByKey):
     def __str__(self, *args, **kwargs):
         cadena="name: " + self.name
         return cadena
-       
+
+class otra():
+    pass
        
 if __name__== '__main__':
     x= NavigationByKeyH("evento h","foco","navegado","www.google.com")

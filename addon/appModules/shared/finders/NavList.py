@@ -8,8 +8,8 @@ import urllib
 import ui
 import api
 import speech
-from eventoAccesibility import *
 import finder
+from interactionEvent.eventoAccesibility import *
 class Finder(finder.Finder):
     def __init__(self, name):
         super(Finder,self).__init__(name)

@@ -1,2 +1,0 @@
-from navigationBykeyH import NavigationByKeyH
-from navigationByKeyL import NavigationByKeyL

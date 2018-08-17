@@ -4,18 +4,17 @@
 #Copyright (C) 2018 Fernando Durgam <fdurgam@gmail.com>
 #Preferencias/Opciones de Cursor de Revision seguir foco del sistema=false
 #Preferencia /modo navegagacion/todo focos =false
-#
 
-from conexiones.logger import logger
-class program():
-    lista=[]
-    def __init__(self):
-        self.logger=logger("192.168.10.110", "self.token", False)
 
-    def getLista(self):
-        return "si"
-    
 
 if __name__== '__main__':
-    x=program()
-    print(x.getLista())
+    import sys
+    import importlib
+    import os
+    dirname, basename = os.path.split(os.path.abspath(os.path.dirname(__file__)))
+    sys.path.append(dirname)
+    from shared.eventoAccesibility import *
+    x=NavigationByKeyH("nombre","foco","obj","","www.google.com")
+    print(str(type(x)))
+    print("no")
+    
