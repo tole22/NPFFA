@@ -23,13 +23,19 @@ from datetime import datetime
 from threading import Timer
 import textInfos
 import browseMode
-from finders import eventoAccesibility
+#from interactionEvent.eventoAccesibility import *
+#from interactionEvent.eventoInteraccion import evento
+#from interactionEvent.navigationByKeyH import otra
+#from interactionEvent.navigationBykey import *
 from conexiones import logger
 #from conexiones import finders
-import finders
+import shared.finders
 import configPlugin
 import sys
+import shared
+#from shared.finders.interactionEvent.eventoAccesibility import *
 from conexiones import parser
+
 
 addonHandler.initTranslation()
 
@@ -52,26 +58,27 @@ class AppModule(firefox.AppModule):
  		api.getFocusObject().treeInterceptor.script_collapseOrExpandControl(gesto)
  		
 	def finderEvent(self,finderEvent,listEvent):
-		for finder in finderEvent:
-			#ui.message("finder.name")
-			#finder.funciona()
-			finder.approbes(listEvent,self.logger)
+		try:
+			for finder in finderEvent:
+				ui.message("procesando finder")
+				ui.message(finder.name)
+				finder.approbes(listEvent,self.logger)
+		except:
+			ui.message("Error finder event")						
+		
 	
 	def event_gainFocus(self, obj, nextHandler):
 		try:
 			ui.message("Cargar configuracion")
-			#Carga los Buscadores y la configuracon
+			self.dispacher=shared.dispacher()
 			if obj.role==controlTypes.ROLE_FRAME:
 				ui.message("dir python")
 				ui.message(configPlugin.getDirPython())
 				dirPython=configPlugin.getDirPython()
 				sys.path.append(dirPython)
 				self.finders=[]
-				self.finders=finders.getFinders()
-				#self.finders.append(finders.finder_NavigationBetweenHeader("Buscador de Header"))
-				#self.finders.append(finders.finder_NavigationBetweenList("Buscador de listas"))
-				#self.finders.append(NavHeader.Finder("Buscador de Header"))
-				#self.finders.append(NavList.Finder("Buscador de listas"))
+				self.event=[]
+				self.finders=shared.finders.getFinders()
 				self.script_url('u')
 				ui.message(self.url)
 				url="http://"+self.url
@@ -108,6 +115,7 @@ class AppModule(firefox.AppModule):
 		caso contrario lo agrega a la lista
 		'''
 		try:
+			ui.message("Agreando evento")
 			equivalent=False
 			if self.event:
 				ultimo=self.event[-1].navegado
@@ -119,6 +127,8 @@ class AppModule(firefox.AppModule):
 				else:
 					ui.message("no iguales")
 			if not equivalent:
+				#if isinstance(event,NavigationByKeyH):
+				#	ui.message("es insancia de NavigationByKeyH ")
 				self.event.append(event)
 				ui.message("evento agregado")
 		except:
@@ -126,18 +136,10 @@ class AppModule(firefox.AppModule):
 	
 	def script_nav_prox_header(self, gesture):
 		try:
-			if self.modoNavegacion():
-				ui.message("Presionaste h")
-				obj=api.getNavigatorObject().treeInterceptor
-				ui.message("evento")
-				browseMode.BrowseModeTreeInterceptor.script_nextHeading(obj,gesture)
-				ui.message("Objeto Foco")
-				objFoco=api.getFocusObject()
-				ui.message("Objeto Navegado")
-				objNavegado=api.getNavigatorObject()
-				speech.speakObject(objNavegado)
-				ui.message("Creando evento")
-				evento=eventoAccesibility.NavigationByKeyH("NavigationByKeyH", objFoco, objNavegado, self.event, self.url)
+			if shared.modoNavegacion():
+				ui.message(gesture.mainKeyName)
+				evento=self.dispacher.event(gesture.mainKeyName,gesture, self.event, self.url)
+				ui.message("cargando evento")
 				self.newEvent(evento)
 			else:
 				self.ignorar_gesto(gesture)
@@ -146,37 +148,25 @@ class AppModule(firefox.AppModule):
 			
 	def script_nav_prox_headerH1(self, gesture):
 		try:
-			if self.modoNavegacion():
-				obj=api.getNavigatorObject().treeInterceptor
-				browseMode.BrowseModeTreeInterceptor.script_nextHeading(obj,gesture)
-				ui.message("Presionaste h")
-				ui.message("Objeto Foco")
-				objFoco=api.getFocusObject()
-				speech.speakObject(objFoco)
-				ui.message("Objeto Navegado")
-				objNavegado=api.getNavigatorObject()
-				speech.speakObject(objNavegado)
-				evento=eventoAccesibility.NavigationByKeyH("NavigationByKeyH", objFoco, objNavegado)
-				if evento.approves:
-					ui.message("evento")
-					ui.message(evento.evento(self.logger))
+			if shared.modoNavegacion():
+				ui.message(gesture.mainKeyName)
+				evento=self.dispacher.event(gesture.mainKeyName,gesture, self.event, self.url)
+				ui.message("cargando evento")
+				if evento:
+					self.newEvent(evento)
 			else:
 				self.ignorar_gesto(gesture)
 		except:
 			ui.message("Error")	
-	
+		
 	def script_nav_prox_list(self, gesture):
 		try:
-			if self.modoNavegacion():
-				obj=api.getNavigatorObject().treeInterceptor
-				browseMode.BrowseModeTreeInterceptor.script_nextList(obj,gesture)
-				ui.message("Presionaste L")
-				ui.message("Objeto Foco")
-				objFoco=api.getFocusObject()
-				ui.message("Objeto Navegado")
-				objNavegado=api.getNavigatorObject()
-				evento=eventoAccesibility.NavigationByKeyL("NavigationByKeyL", objFoco, objNavegado, self.event, self.url)
-				self.newEvent(evento)
+			if shared.modoNavegacion():
+				ui.message(gesture.mainKeyName)
+				evento=self.dispacher.event(gesture.mainKeyName,gesture, self.event, self.url)
+				ui.message("cargando evento")
+				if evento:
+					self.newEvent(evento)
 			else:
 				self.ignorar_gesto(gesture)
 		except:
@@ -207,7 +197,7 @@ class AppModule(firefox.AppModule):
 			ui.message(str(len(self.finders)))
 			self.finderEvent(self.finders, self.event)
 		except:
-			ui.message("Error")
+			ui.message("Error en status")
 			
 	def script_url(self, gesture):
 		if not self.inMainWindow():
@@ -264,9 +254,10 @@ class AppModule(firefox.AppModule):
 		except (AttributeError, KeyError):
 				return False
 		return True	
-	
+	#Los gestos son del tipo keyboardHandler.KeyBoardImputGesture
 	__gestures = {
 		"kb:h": "nav_prox_header",
+		"kb:1": "nav_prox_headerH1",
 		"kb:shift+h": "nav_previous_header",
 		"kb:NVDA+F8": "status",
 		"kb(desktop):NVDA+A": "status",
