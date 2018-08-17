@@ -4,6 +4,13 @@ Created on 18 jun. 2018
 @author: fernando
 '''
 import datetime
+import api
+
+def NavigationByKeyH1():
+    from navigationByKeyH import NavigationByKeyH1
+    return NavigationByKeyH1("NavigationByKeyH1","listevent","www.googleom")
+
+
 
 class eventoInteraccion(object):
     
@@ -49,21 +56,26 @@ class NavigationByKey(eventoInteraccion):
         return self.logger
         
 class NavigationByKeyH(NavigationByKey):
-    def __init__(self, name, foco, navegado, listEvent, url):
+    def __init__(self, name, listEvent, url):
         '''
         Constructor
         '''
+        foco=api.getFocusObject()
+        navegado=api.getNavigatorObject()
         super(NavigationByKeyH,self).__init__(name, foco, navegado, url)
+        
         
     def __str__(self, *args, **kwargs):
         cadena="name: " + self.name
         return cadena
     
 class NavigationByKeyL(NavigationByKey):
-    def __init__(self, name, foco, navegado, listEvent, url):
+    def __init__(self, name, listEvent, url):
         '''
         Constructor
         '''
+        foco=api.getFocusObject()
+        navegado=api.getNavigatorObject()
         super(NavigationByKeyL,self).__init__(name, foco, navegado,url)
     
 

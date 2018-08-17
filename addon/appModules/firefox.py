@@ -132,34 +132,9 @@ class AppModule(firefox.AppModule):
 				self.event.append(event)
 				ui.message("evento agregado")
 		except:
-			ui.message("Error al cargar evento")	
-	
-	def script_nav_prox_header(self, gesture):
-		try:
-			if shared.modoNavegacion():
-				ui.message(gesture.mainKeyName)
-				evento=self.dispacher.event(gesture.mainKeyName,gesture, self.event, self.url)
-				ui.message("cargando evento")
-				self.newEvent(evento)
-			else:
-				self.ignorar_gesto(gesture)
-		except:
-			ui.message("Error")	
+			ui.message("Error al cargar evento")
 			
-	def script_nav_prox_headerH1(self, gesture):
-		try:
-			if shared.modoNavegacion():
-				ui.message(gesture.mainKeyName)
-				evento=self.dispacher.event(gesture.mainKeyName,gesture, self.event, self.url)
-				ui.message("cargando evento")
-				if evento:
-					self.newEvent(evento)
-			else:
-				self.ignorar_gesto(gesture)
-		except:
-			ui.message("Error")	
-		
-	def script_nav_prox_list(self, gesture):
+	def script_dispatchEvent(self, gesture):
 		try:
 			if shared.modoNavegacion():
 				ui.message(gesture.mainKeyName)
@@ -256,17 +231,15 @@ class AppModule(firefox.AppModule):
 		return True	
 	#Los gestos son del tipo keyboardHandler.KeyBoardImputGesture
 	__gestures = {
-		"kb:h": "nav_prox_header",
-		"kb:1": "nav_prox_headerH1",
-		"kb:shift+h": "nav_previous_header",
-		"kb:NVDA+F8": "status",
-		"kb(desktop):NVDA+A": "status",
-		"kb(laptop):NVDA+Control+A": "status",
-		"kb:NVDA+Control+N": "status",
-		"kb:t": "config",
-		"kb:1": "nav_prox_headerH1",
-		"kb:l": "nav_prox_list",
-		"kb:u": "url",
+		"kb:h": "dispatchEvent",
+		"kb:1": "dispatchEvent",
+		"kb:shift+h": "dispatchEvent",
+		"kb:t": "dispatchEvent",
+		"kb:1": "dispatchEvent",
+		"kb:2": "dispatchEvent",
+		"kb:5": "dispatchEvent",
+		"kb:l": "dispatchEvent",
+		"kb:u": "dispatchEvent",
 		"kb:o": "status"
 	}
 	
