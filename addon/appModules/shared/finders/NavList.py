@@ -9,7 +9,7 @@ import ui
 import api
 import speech
 import finder
-from interactionEvent.eventoAccesibility import *
+from interactionEvent.navigationByKeyL import NavigationByKeyL
 class Finder(finder.Finder):
     def __init__(self, name):
         super(Finder,self).__init__(name)
@@ -29,7 +29,7 @@ class Finder(finder.Finder):
                     (left,top,width,height)=event.navegado.location
                     #ui.message("Absolutas")
                     params=urllib.urlencode({"threat":"NavigationListMenu","finalTop":"finaltopp" ,"locationNavegador":(left,top,width,height),"timeStamp":event.timeStamp,"navegado":event.navegado,"url":event.url})
-                    logger.logEven('NavigationByKeyH',params,False)
+                    logger.logEven('',params,False)
             #ui.message("Cantidad de Navegacion de listas NavigationBetweenList")
             #ui.message(str(len(eventsNavList)))
         except:

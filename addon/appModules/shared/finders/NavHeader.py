@@ -9,7 +9,8 @@ import ui
 import api
 import speech
 import finder
-from interactionEvent.eventoAccesibility import *
+#from interactionEvent.eventoAccesibility import *
+from interactionEvent.navigationByKeyH import NavigationByKeyH
 class Finder(finder.Finder):
     def __init__(self, name):
         super(Finder,self).__init__(name)

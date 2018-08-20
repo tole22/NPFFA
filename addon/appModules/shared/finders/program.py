@@ -4,17 +4,11 @@
 #Copyright (C) 2018 Fernando Durgam <fdurgam@gmail.com>
 #Preferencias/Opciones de Cursor de Revision seguir foco del sistema=false
 #Preferencia /modo navegagacion/todo focos =false
-
+from interactionEvent import *
 
 
 if __name__== '__main__':
-    import sys
-    import importlib
-    import os
-    dirname, basename = os.path.split(os.path.abspath(os.path.dirname(__file__)))
-    sys.path.append(dirname)
-    from shared.eventoAccesibility import *
-    x=NavigationByKeyH("nombre","foco","obj","","www.google.com")
-    print(str(type(x)))
+    x= NavigationByKeyH1("evento h","foco","navegado","www.google.com")
+    print(x.__str__())
     print("no")
     
