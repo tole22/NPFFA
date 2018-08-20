@@ -20,7 +20,8 @@ class NavigationByKey(evento):
         super(NavigationByKey,self).__init__(name,url)
         ui.message("Evento de")
         ui.message(self.name)
-        
+    
+    
     def __str__(self, *args, **kwargs):
         cadena="name: " + self.name
         return cadena

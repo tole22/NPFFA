@@ -41,8 +41,3 @@ class parser(HTMLParser):
         l=f.read()
         self.feed(l)
         return self.token
-        
-if __name__=='__main__':
-    x=parser('http://192.168.1.110/accesibilidad2/Modo%20Navegacion%20NVDA/ModoNavegacion.php')
-    print "El server es:",x.getServer()
-    print "El token es: ",x.getToken()

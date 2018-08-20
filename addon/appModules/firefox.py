@@ -32,9 +32,10 @@ from conexiones import logger
 import shared.finders
 import configPlugin
 import sys
+import browseMode
 import shared
 #from shared.finders.interactionEvent.eventoAccesibility import *
-from conexiones import parser
+#from conexiones import parser
 
 
 addonHandler.initTranslation()
@@ -82,6 +83,7 @@ class AppModule(firefox.AppModule):
 				self.script_url('u')
 				ui.message(self.url)
 				url="http://"+self.url
+				from conexiones import parser
 				pagina=parser.parser(url)
 				ui.message("url")
 				ui.message(url)

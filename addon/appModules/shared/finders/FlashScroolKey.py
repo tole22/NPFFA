@@ -17,8 +17,30 @@ class Finder(finder.Finder):
 
     def approbes(self, listEvent, logger):
         try:
+            try:
+                #import sys
+                #sys.path.append("C:\Users\fernando\AppData\Roaming\nvda\addons\NVDA-Accessibility\appModules\shared")
+                ui.message("Si import")
+                #import importlib
+                #import os
+                #ui.message("importlib importada")
+                #dirname, basename = os.path.split(os.path.abspath(os.path.dirname(__file__)))
+                #sys.path.append(dirname)
+                #from shared.eventoAccesibility import *
+                #ui.message(dirname)
+                #from eventoAccesibility import *
+                #ui.message("el error")
+                #y=NavigationByKeyH(sys,"nombre","foco","obj","www.google.com")
+                #ui.message(y.url)
+            except ImportError:
+                ui.message("No import")
             for event in reversed(listEvent):
                 ui.message("finde h")
+                #x=NavigationByKeyH("nombre","foco","obj","","www.google.com")
+                #ui.message("tipo de evento")
+                #ui.message(str(type(event)))
+                #ui.message("tipo de x")
+                #ui.message(str(type(x)))
                 if isinstance(event,NavigationByKeyH):
                     ui.message("Objeto Foco")
                     (leftf,topf,widthf,heightf)=event.foco.location
@@ -29,7 +51,7 @@ class Finder(finder.Finder):
                     (deskLeft,deskTop,deskWidth,deskHeight)=api.getDesktopObject().location
                     #speech.speakObject(event.navegado)
                     #finaltop=float(top-deskTop)
-                    params=urllib.urlencode({"threat":"FlashScrolingKeyH","timeStamp":event.timeStamp,"navegado":event.navegado,"url":event.url,"locationNavegador":(left,top,width,height)})
+                    params=urllib.urlencode({"threat":"FlashScrolingKeyH","desktop":(deskLeft,deskTop,deskWidth,deskHeight),"foco Location":(leftf,topf,widthf,heightf),"finalTop":"finaltop" ,"locationNavegador":(left,top,width,height),"timeStamp":event.timeStamp,"navegado":event.navegado,"url":event.url})
                     ui.message("Enviando")
                     logger.logEven('NavigationByKeyH',params,False)
                     ui.message("enviando")

@@ -48,6 +48,7 @@ class dispacher():
 			ui.message(direction)
 			ui.message(gesture.mainKeyName)
 			previo=api.getNavigatorObject()
+			ui
 			#inputGesture=str(gesture.mainKeyName)
 			obj=api.getNavigatorObject().treeInterceptor
 			#ui.message(str(gesture))
@@ -56,7 +57,6 @@ class dispacher():
 					browseMode.BrowseModeTreeInterceptor.script_nextHeading(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousHeading(obj,gesture)
-				#return NavigationByKeyH("NavigationByKeyH", url)
 			if inputGesture=="l":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextList(obj,gesture)
@@ -208,6 +208,7 @@ class dispacher():
 					browseMode.BrowseModeTreeInterceptor.script_previousHeading6(obj,gesture)
 				#return None
 			if previo==api.getNavigatorObject():
+				ui.message("No hay navegacion")
 				return None #No se produjo la navegacion
 			else:
 				return self.handlerEvent(inputGesture, url) #Si se produjo la navegacion
@@ -225,6 +226,7 @@ class dispacher():
 			if inputKey=="h":
 				ui.message("Evento h")
 				return NavigationByKeyH("NavigationByKeyH", url)
+				#return NavigationByKeyH("NavigationByKeyH",direction, url,gesture)
 			if inputKey=="l":
 				return NavigationByKeyL("NavigationByKeyL", url)
 			if inputKey=="i":

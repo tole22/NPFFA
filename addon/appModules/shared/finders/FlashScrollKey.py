@@ -10,31 +10,27 @@ import api
 import speech
 import finder
 #from interactionEvent.eventoAccesibility import *
+#from interactionEvent.navigationByKeyH import NavigationByKeyH
 from interactionEvent.navigationByKeyH import NavigationByKeyH
 class Finder(finder.Finder):
     def __init__(self, name):
         super(Finder,self).__init__(name)
+        self.minimunSteps=3
+        self.maximunScrollingTime=2000
+        self.scrollingStarTingTime=1500
+        self.steps=0
 
     def approbes(self, listEvent, logger):
         try:
+            if not len(listEvent)>self.minimunSteps:
+                return None
+            times=[]
             for event in reversed(listEvent):
-                ui.message("finde h")
-                if isinstance(event,NavigationByKeyH):
-                    ui.message("Objeto Foco")
-                    (leftf,topf,widthf,heightf)=event.foco.location
-                    speech.speakObject(event.foco)
-                    ui.message("Objeto navegado")
-                    (left,top,width,height)=event.navegado.location
-                    ui.message("Absolutas")
-                    (deskLeft,deskTop,deskWidth,deskHeight)=api.getDesktopObject().location
-                    #speech.speakObject(event.navegado)
-                    #finaltop=float(top-deskTop)
-                    params=urllib.urlencode({"threat":"FlashScrolingKeyH","timeStamp":event.timeStamp,"navegado":event.navegado,"url":event.url,"locationNavegador":(left,top,width,height)})
-                    ui.message("Enviando")
-                    logger.logEven('NavigationByKeyH',params,False)
-                    ui.message("enviando")
-                else:
-                    ui.message("No es instnacia de NavigationByKeyH ")
+                times.append(event.timeStamp)
+            params=urllib.urlencode({"threat":"FlashScroll","timeStamp":times,"url":event.url})
+            ui.message("Enviando")
+            logger.logEven('NavigationByKeyH',params,False)
+            ui.message("enviando")
         except:
             x=1
             ui.message("Error al  Procesar finder NavigationByKeyH")

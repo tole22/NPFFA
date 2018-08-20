@@ -6,7 +6,10 @@
 #Preferencia /modo navegagacion/todo focos =false
 from navigationByKey import NavigationByKey
 import api
+import browseMode
+import ui
 class NavigationByKeyH(NavigationByKey):
+        
     def __init__(self, name, url):
         '''
         Constructor

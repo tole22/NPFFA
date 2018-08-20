@@ -47,8 +47,8 @@ class logger(object):
         conn=httplib.HTTPConnection(self.server)
         request=conn.request("POST","/Threats",params,headers)
         response=conn.getresponse()
-        print response.status , response.reason
-        print request
+        #print response.status , response.reason
+        #print request
         #print response.status
         
     def __str__(self, *args, **kwargs):
