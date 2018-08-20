@@ -134,11 +134,24 @@ class AppModule(firefox.AppModule):
 		except:
 			ui.message("Error al cargar evento")
 			
-	def script_dispatchEvent(self, gesture):
+	def script_dispatchEventNext(self, gesture):
 		try:
 			if shared.modoNavegacion():
 				ui.message(gesture.mainKeyName)
-				evento=self.dispacher.event(gesture.mainKeyName,gesture, self.event, self.url)
+				evento=self.dispacher.event("next",gesture.mainKeyName,gesture, self.event, self.url)
+				ui.message("cargando evento")
+				if evento:
+					self.newEvent(evento)
+			else:
+				self.ignorar_gesto(gesture)
+		except:
+			ui.message("Error")		
+			
+	def script_dispatchEventPrevious(self, gesture):
+		try:
+			if shared.modoNavegacion():
+				ui.message(gesture.mainKeyName)
+				evento=self.dispacher.event("previous",gesture.mainKeyName,gesture, self.event, self.url)
 				ui.message("cargando evento")
 				if evento:
 					self.newEvent(evento)
@@ -231,15 +244,58 @@ class AppModule(firefox.AppModule):
 		return True	
 	#Los gestos son del tipo keyboardHandler.KeyBoardImputGesture
 	__gestures = {
-		"kb:h": "dispatchEvent",
-		"kb:1": "dispatchEvent",
-		"kb:shift+h": "dispatchEvent",
-		"kb:t": "dispatchEvent",
-		"kb:1": "dispatchEvent",
-		"kb:2": "dispatchEvent",
-		"kb:5": "dispatchEvent",
-		"kb:l": "dispatchEvent",
-		"kb:u": "dispatchEvent",
-		"kb:o": "status"
+		"kb:h": "dispatchEventNext",
+		"kb:shift+h": "dispatchEventPrevious",
+		"kb:l": "dispatchEventNext",
+		"kb:shift+l": "dispatchEventPrevious",
+		"kb:i": "dispatchEventNext",
+		"kb:shift+i": "dispatchEventPrevious",
+		"kb:t": "dispatchEventNext",
+		"kb:shift+t": "dispatchEventPrevious",
+		"kb:k": "dispatchEventNext",
+		"kb:shift+k": "dispatchEventPrevious",
+		"kb:n": "dispatchEventNext",
+		"kb:shift+k": "dispatchEventPrevious",
+		"kb:f": "dispatchEventNext",
+		"kb:shift+f": "dispatchEventPrevious",
+		"kb:u": "dispatchEventNext",
+		"kb:shift+u": "dispatchEventPrevious",
+		"kb:v": "dispatchEventNext",
+		"kb:shift+v": "dispatchEventPrevious",
+		"kb:e": "dispatchEventNext",
+		"kb:shift+e": "dispatchEventPrevious",
+		"kb:b": "dispatchEventNext",
+		"kb:shift+b": "dispatchEventPrevious",
+		"kb:x": "dispatchEventNext",
+		"kb:shift+x": "dispatchEventPrevious",
+		"kb:c": "dispatchEventNext",
+		"kb:shift+c": "dispatchEventPrevious",
+		"kb:r": "dispatchEventNext",
+		"kb:shift+r": "dispatchEventPrevious",
+		"kb:q": "dispatchEventNext",
+		"kb:shift+q": "dispatchEventPrevious",
+		"kb:s": "dispatchEventNext",
+		"kb:shift+s": "dispatchEventPrevious",
+		"kb:m": "dispatchEventNext",
+		"kb:shift+m": "dispatchEventPrevious",
+		"kb:g": "dispatchEventNext",
+		"kb:shift+g": "dispatchEventPrevious",
+		"kb:d": "dispatchEventNext",
+		"kb:shift+d": "dispatchEventPrevious",
+		"kb:o": "dispatchEventNext",
+		"kb:shift+o": "dispatchEventPrevious",
+		"kb:1": "dispatchEventNext",
+		"kb:shift+1": "dispatchEventPrevious",
+		"kb:2": "dispatchEventNext",
+		"kb:shift+2": "dispatchEventPrevious",
+		"kb:3": "dispatchEventNext",
+		"kb:shift+3": "dispatchEventPrevious",
+		"kb:4": "dispatchEventNext",
+		"kb:shift+4": "dispatchEventPrevious",
+		"kb:5": "dispatchEventNext",
+		"kb:shift+5": "dispatchEventPrevious",
+		"kb:6": "dispatchEventNext",
+		"kb:shift+6": "dispatchEventPrevious",
+		"kb:p": "status"
 	}
 	
