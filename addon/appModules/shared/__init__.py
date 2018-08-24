@@ -48,7 +48,6 @@ class dispacher():
 			ui.message(direction)
 			ui.message(gesture.mainKeyName)
 			previo=api.getNavigatorObject()
-			ui
 			#inputGesture=str(gesture.mainKeyName)
 			obj=api.getNavigatorObject().treeInterceptor
 			#ui.message(str(gesture))
@@ -225,6 +224,7 @@ class dispacher():
 			#ui.message(str(gesture))
 			if inputKey=="h":
 				ui.message("Evento h")
+				evento=NavigationByKeyH("NavigationByKeyH", url)
 				return NavigationByKeyH("NavigationByKeyH", url)
 				#return NavigationByKeyH("NavigationByKeyH",direction, url,gesture)
 			if inputKey=="l":

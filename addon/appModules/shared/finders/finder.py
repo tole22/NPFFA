@@ -21,6 +21,7 @@ class Finder(object):
         '''
         self.name=name
         
+       
     def __str__(self, *args, **kwargs):
         cadena="name: " + self.name
         return cadena

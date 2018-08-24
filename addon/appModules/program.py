@@ -17,5 +17,17 @@ class program():
     
 
 if __name__== '__main__':
+    #import shelve 
+    #shelf=shelve.open("dato.dat")
+    #klist=shelf.keys()
+    #for key in klist:
+    #    print shelf[key]
+    #shelf.close()
+    #from shared.finders.interactionEvent.navigationByKeyH import NavigationByKeyH
+    import os
+    import pickle
+    fileName=os.path.dirname(os.path.abspath(__file__))+"\dato.dat"
+    reader=pickle.load(open(fileName))
+    reader.readline()
     x=program()
     print(x.getLista())

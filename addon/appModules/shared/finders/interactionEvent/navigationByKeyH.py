@@ -17,7 +17,7 @@ class NavigationByKeyH(NavigationByKey):
         super(NavigationByKeyH,self).__init__(name, url)
         
     def __str__(self, *args, **kwargs):
-        cadena="name: " + self.name
+        cadena="evento: " + self.name
         return cadena
 
 class otra():

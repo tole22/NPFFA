@@ -18,6 +18,7 @@ import winUser
 import speech
 import gui
 import wx
+import os
 import tones
 from datetime import datetime
 from threading import Timer
@@ -67,48 +68,68 @@ class AppModule(firefox.AppModule):
 		except:
 			ui.message("Error finder event")						
 		
+	def config(self):
+		try:
+			ui.message("Cargar configuracion")
+			ui.message("dir python")
+			ui.message(configPlugin.getDirPython())
+			dirPython=configPlugin.getDirPython()
+			sys.path.append(dirPython)
+			self.finders=[]
+			self.event=[]
+			ui.message("dir python")
+			self.script_url('u')
+			ui.message(self.url)
+			url="http://"+self.url
+			from conexiones import parser
+			#from logHandler import log
+			#from shelve import Shelf
+			#log.info("Configura Aplicacion")
+			pagina=parser.parser(url)
+			ui.message("url")
+			ui.message(url)
+			ui.message("Direccion server")
+			server=pagina.getServer()
+			ui.message(server)
+			token=pagina.getToken()
+			ui.message("token")
+			ui.message(token)
+			self.server=server
+			self.token=token
+			ui.message("cargando Logger")
+			self.logger=logger.logger(self.server, self.token, False)
+			self.dispacher=shared.dispacher()
+			ui.message("Cargando finder")
+			self.finders=shared.finders.getFinders(self.logger)
+			ui.message("configuracion bien cargada")
+		except:
+			log.error("Error en config")
+			ui.message("Error en config")
+		
 	
 	def event_gainFocus(self, obj, nextHandler):
 		try:
-			ui.message("Cargar configuracion")
-			self.dispacher=shared.dispacher()
+			#log.error("iniciando", exc_info=True)
+			#log.warning("hola mundo")
+			ui.message("gainFocus")
 			if obj.role==controlTypes.ROLE_FRAME:
-				ui.message("dir python")
-				ui.message(configPlugin.getDirPython())
-				dirPython=configPlugin.getDirPython()
-				sys.path.append(dirPython)
-				self.finders=[]
-				self.event=[]
-				self.finders=shared.finders.getFinders()
-				self.script_url('u')
-				ui.message(self.url)
-				url="http://"+self.url
-				from conexiones import parser
-				pagina=parser.parser(url)
-				ui.message("url")
-				ui.message(url)
-				ui.message("Direccion server")
-				server=pagina.getServer()
-				ui.message(server)
-				token=pagina.getToken()
-				ui.message("token")
-				ui.message(token)
-				self.server=server
-				self.token=token
-				ui.message("cargando Logger")
-				self.logger=logger.logger(self.server, self.token, False)
+				self.config()
 			nextHandler()
 		except:
-			ui.message("Error en gain focus")						
+			log.error("Error en gain focus")
+			ui.message("Error en gain focus")	
+								
 		
  	def modoNavegacion(self):
  		try:
+ 			#log.info("Verifica Modo de Navegacion")
  			focus = api.getFocusObject()
  			vbuf=focus.treeInterceptor
  			if vbuf.passThrough:
  				return False
  			return True
  	 	except:
+ 	 		#log.error("Verifica Modo de Navegacion")
 			ui.message("Error modo navegacion")
  		
  	def newEvent(self,event):
@@ -132,7 +153,21 @@ class AppModule(firefox.AppModule):
 				#if isinstance(event,NavigationByKeyH):
 				#	ui.message("es insancia de NavigationByKeyH ")
 				self.event.append(event)
+				log.info(self.event)
 				ui.message("evento agregado")
+				animales=["perros","gatos"]
+				import pickle
+   				fileName=os.path.dirname(os.path.abspath(__file__))+"\dato.dat"
+   				file=open(fileName,mode="wb")
+   				my_pickled_event=pickle.dump(event,file)
+   				file.close()
+				#import shelve
+				#fileName=os.path.dirname(os.path.abspath(__file__))+"\data.dat"
+   				#she=shelve.open(fileName)
+   				#animales=["perros","gatos"]
+   				#she["event"]=animales
+   				#she.close()
+   					
 		except:
 			ui.message("Error al cargar evento")
 			
@@ -140,7 +175,7 @@ class AppModule(firefox.AppModule):
 		try:
 			if shared.modoNavegacion():
 				ui.message(gesture.mainKeyName)
-				evento=self.dispacher.event("next",gesture.mainKeyName,gesture, self.event, self.url)
+				evento=self.dispacher.event("next",gesture.mainKeyName, gesture, self.event, self.url)
 				ui.message("cargando evento")
 				if evento:
 					self.newEvent(evento)
@@ -174,6 +209,8 @@ class AppModule(firefox.AppModule):
  		
  	def script_status(self, gesture):
 		try:
+			ui.message("Cantindad de Buscadores")
+			ui.message(str(len(self.finders)))
 			focus = api.getFocusObject()
 			vbuf=focus.treeInterceptor
 			ui.message("Modo de navegacion")
@@ -183,8 +220,6 @@ class AppModule(firefox.AppModule):
 				ui.message("Desactivado")
 			ui.message("Cantida de eventos")
 			ui.message(str(len(self.event)))
-			ui.message("Cantindad de Buscadores")
-			ui.message(str(len(self.finders)))
 			self.finderEvent(self.finders, self.event)
 		except:
 			ui.message("Error en status")
