@@ -11,7 +11,7 @@ class NavigationByKeyI(NavigationByKey):
         '''
         Constructor
         '''
-        super(NavigationByKeyH,self).__init__(name, url)
+        super(NavigationByKeyH,self).__init__(name, url, foco ,navegado)
         
     def __str__(self, *args, **kwargs):
         cadena="name: " + self.name

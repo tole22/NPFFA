@@ -5,13 +5,12 @@
 #Preferencias/Opciones de Cursor de Revision seguir foco del sistema=false
 #Preferencia /modo navegagacion/todo focos =false
 from navigationByKey import NavigationByKey
-import api
 class NavigationByKeyB(NavigationByKey):
-    def __init__(self, name, url):
+    def __init__(self, name, url, foco ,navegado):
         '''
         Constructor
         '''
-        super(NavigationByKeyB,self).__init__(name, url)
+        super(NavigationByKeyB,self).__init__(name, url, foco ,navegado)
         
     def __str__(self, *args, **kwargs):
         cadena="name: " + self.name
@@ -21,5 +20,5 @@ class otra():
     pass
        
 if __name__== '__main__':
-    x= NavigationByKeyH("evento h","foco","navegado","www.google.com")
+    x= NavigationByKeyB("evento h","foco","navegado","www.google.com")
     print(x.__str__())

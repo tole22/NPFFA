@@ -5,21 +5,17 @@
 #Preferencias/Opciones de Cursor de Revision seguir foco del sistema=false
 #Preferencia /modo navegagacion/todo focos =false
 from eventoInteraccion import evento
-import api
-import ui
 class NavigationByKey(evento):
     '''
     constructor
     '''
-    def __init__(self, name, url):
+    def __init__(self, name, url, foco, navegado):
         '''
         Constructor
         '''
-        self.foco=api.getFocusObject()
-        self.navegado=api.getNavigatorObject()
+        self.foco=foco
+        self.navegado=navegado
         super(NavigationByKey,self).__init__(name,url)
-        ui.message("Evento de")
-        ui.message(self.name)
     
     
     def __str__(self, *args, **kwargs):

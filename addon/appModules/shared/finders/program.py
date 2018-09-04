@@ -4,11 +4,11 @@
 #Copyright (C) 2018 Fernando Durgam <fdurgam@gmail.com>
 #Preferencias/Opciones de Cursor de Revision seguir foco del sistema=false
 #Preferencia /modo navegagacion/todo focos =false
-from interactionEvent import *
+from interactionEvent.navigationByKeyH import NavigationByKeyH
 
 
 if __name__== '__main__':
-    x= NavigationByKeyH1("evento h","foco","navegado","www.google.com")
+    x= NavigationByKeyH("evento h","foco","navegado","www.google.com")
     print(x.__str__())
     print("no")
     

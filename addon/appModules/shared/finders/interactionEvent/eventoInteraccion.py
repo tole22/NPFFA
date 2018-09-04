@@ -14,3 +14,7 @@ class evento(object):
         self.name=name
         self.url=url
         self.timeStamp= datetime.datetime.now()
+        
+    def previo(self,foco,navegado):
+        self.focoPrevio=foco
+        self.navegadoPrevio=navegado

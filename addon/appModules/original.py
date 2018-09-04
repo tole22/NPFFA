@@ -27,7 +27,6 @@ import browseMode
 from conexiones import logger
 import shared.finders
 import configPlugin
-import dispatcher2
 import sys
 import browseMode
 import shared
@@ -52,51 +51,48 @@ class AppModule(firefox.AppModule):
 			for finder in finderEvent:
 				ui.message("procesando finder")
 				ui.message(finder.name)
-				if finder.approbes(listEvent):
-					eventoAccesibilidad=finder.approbes(listEvent)
-					self.logger.logEven(eventoAccesibilidad.name, eventoAccesibilidad.getReportLogger(), False)
-				
+				finder.approbes(listEvent)
 		except:
 			ui.message("Error finder event")						
 		
 	def config(self):
 		try:
 			ui.message("Cargar configuracion")
-			#ui.message("dir python")
-			#ui.message(configPlugin.getDirPython())
+			ui.message("dir python")
+			ui.message(configPlugin.getDirPython())
 			dirPython=configPlugin.getDirPython()
 			sys.path.append(dirPython)
 			self.finders=[]
 			self.event=[]
-			#ui.message("dir python")
+			ui.message("dir python")
 			self.script_url('u')
-			#ui.message(self.url)
+			ui.message(self.url)
 			url="http://"+self.url
 			from conexiones import parser
 			#from logHandler import log
 			#from shelve import Shelf
 			#log.info("Configura Aplicacion")
 			pagina=parser.parser(url)
-			#ui.message("url")
-			#ui.message(url)
-			#ui.message("Direccion server")
+			ui.message("url")
+			ui.message(url)
+			ui.message("Direccion server")
 			server=pagina.getServer()
-			#ui.message(server)
+			ui.message(server)
 			token=pagina.getToken()
-			#ui.message("token")
-			#ui.message(token)
+			ui.message("token")
+			ui.message(token)
 			self.server=server
 			self.token=token
 			ui.message("cargando Logger")
 			self.logger=logger.logger(self.server, self.token, False)
+			self.dispacher=dispatcher()
 			ui.message("Cargando finder")
 			self.finders=shared.finders.getFinders()
-			ui.message("cargando dispacher")
-			self.dispacher=dispatcher2.dispatcher()
 			ui.message("configuracion bien cargada")
 		except:
 			log.error("Error en config")
 			ui.message("Error en config")
+		
 	
 	def event_gainFocus(self, obj, nextHandler):
 		try:
@@ -164,7 +160,7 @@ class AppModule(firefox.AppModule):
 			
 	def script_dispatchEventNext(self, gesture):
 		try:
-			if dispatcher2.modoNavegacion():
+			if shared.modoNavegacion():
 				ui.message(gesture.mainKeyName)
 				evento=self.dispacher.event("next",gesture.mainKeyName, gesture, self.event, self.url)
 				ui.message("cargando evento")
@@ -173,11 +169,11 @@ class AppModule(firefox.AppModule):
 			else:
 				self.ignorar_gesto(gesture)
 		except:
-			ui.message("Error en evento")		
+			ui.message("Error")		
 			
 	def script_dispatchEventPrevious(self, gesture):
 		try:
-			if dispatcher2.modoNavegacion():
+			if shared.modoNavegacion():
 				ui.message(gesture.mainKeyName)
 				evento=self.dispacher.event("previous",gesture.mainKeyName,gesture, self.event, self.url)
 				ui.message("cargando evento")
@@ -186,7 +182,7 @@ class AppModule(firefox.AppModule):
 			else:
 				self.ignorar_gesto(gesture)
 		except:
-			ui.message("Error en evento")		
+			ui.message("Error")		
 	
  	def script_config(self, gesture):
  			try:

@@ -28,6 +28,9 @@ class Finder(object):
     
     def getElementByXpath(self,path):
         pass 
+    
+    def go(self):
+    	pass
 
 if __name__== '__main__':
 	x=getFinders()

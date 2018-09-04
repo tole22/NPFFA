@@ -5,16 +5,13 @@
 #Preferencias/Opciones de Cursor de Revision seguir foco del sistema=false
 #Preferencia /modo navegagacion/todo focos =false
 from navigationByKey import NavigationByKey
-import api
-import browseMode
-import ui
 class NavigationByKeyH(NavigationByKey):
         
-    def __init__(self, name, url):
+    def __init__(self, name, url, foco ,navegado):
         '''
         Constructor
         '''
-        super(NavigationByKeyH,self).__init__(name, url)
+        super(NavigationByKeyH,self).__init__(name, url, foco, navegado)
         
     def __str__(self, *args, **kwargs):
         cadena="evento: " + self.name

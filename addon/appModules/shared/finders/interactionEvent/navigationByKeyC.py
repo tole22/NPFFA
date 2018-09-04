@@ -10,7 +10,7 @@ class NavigationByKeyC(NavigationByKey):
         '''
         Constructor
         '''
-        super(NavigationByKeyC,self).__init__(name,url)
+        super(NavigationByKeyC,self).__init__(name, url, foco ,navegado)
 if __name__== '__main__':
     x= NavigationByKeyL("evento L","foco","navegado","www.google.com")
     print(x.__str__())

@@ -5,31 +5,41 @@
 #Preferencias/Opciones de Cursor de Revision seguir foco del sistema=false
 #Preferencia /modo navegagacion/todo focos =false
 import urllib
-import ui
-import api
-import speech
 import finder
 from interactionEvent.navigationByKeyL import NavigationByKeyL
+from accessibilityEvent.accessibilityEvent import AccessibilityEventNVDA
 class Finder(finder.Finder):
     def __init__(self, name):
         super(Finder,self).__init__(name)
     
-    def approbes(self, listEvent, logger):
+    def approbes(self, listEvent):
         try:
             eventsNavList=[]
             for event in reversed(listEvent):
                  if isinstance(event,NavigationByKeyL):
-                    ui.message("Cantidad de Hijos")
+                    #ui.message("Cantidad de Hijos")
                     #speech.speakObject(event.navegado)
                     #ui.message(str(len(event.navegado.children)))
                     eventsNavList.append(event)
                     #ui.message("Objeto Foco")
-                    (leftf,topf,widthf,heightf)=event.foco.location
+                    #return event.foco.location
+                    if event.foco:
+                        (leftf,topf,widthf,heightf)=event.foco.location
+                    else:
+                        (leftf,topf,widthf,heightf)=(0,0,0,0)
                     #ui.message("Objeto navegado")
-                    (left,top,width,height)=event.navegado.location
+                    if event.navegado:
+                        (left,top,width,height)=event.navegado.location
+                    else:
+                        (left,top,width,height)=(0,0,0,0)
                     #ui.message("Absolutas")
-                    params=urllib.urlencode({"threat":"NavigationListMenu","finalTop":"finaltopp" ,"locationNavegador":(left,top,width,height),"timeStamp":event.timeStamp,"navegado":event.navegado,"url":event.url})
-                    logger.logEven('',params,False)
+                    if urllib.urlencode({"threat":"NavigationListMenu","finalTop":"finaltop" ,"locationNavegador":(left,top,width,height),"timeStamp":event.timeStamp,"navegado":event.navegado,"url":event.url}):
+                        params=urllib.urlencode({"threat":"NavigationListMenu","finalTop":"finaltop" ,"locationNavegador":(left,top,width,height),"timeStamp":event.timeStamp,"navegado":event.navegado,"url":event.url})
+                        eventoAccesibilidad=AccessibilityEventNVDA("ContentOverlooked",eventsNavList,params)
+                        return eventoAccesibilidad
+                    #logger.logEven('',params,False)
+                    return None
+            return None
             #ui.message("Cantidad de Navegacion de listas NavigationBetweenList")
             #ui.message(str(len(eventsNavList)))
         except:
@@ -37,4 +47,11 @@ class Finder(finder.Finder):
             #ui.message("Error al  Procesar finder de list")
 
 if __name__== '__main__':
-	x=Finder("Buscar Navegacion entre listas")
+    x=Finder("Buscar Navegacion entre listas")
+    eventsNavListtest=[]
+    eventsNavListtest.append(NavigationByKeyL("nombre","www.google.com","",""))
+    if x.approbes(eventsNavListtest):
+        print("Evento")
+        print x.approbes(eventsNavListtest).name
+        print x.approbes(eventsNavListtest).getReportLogger()
+        print("no evento")
