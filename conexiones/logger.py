@@ -40,7 +40,9 @@ class logger(object):
         
     def logEven(self, threatName, params, asynchronic):
         ui.message("prcesando longger")
-        parameters={"token":self.clientToken, "threat":threatName,"timestamp":datetime.datetime.now()}
+        #ui.message("URL")
+        ui.message(params["url"])
+        parameters={"token":self.clientToken, "threat":threatName}
         params["token"]=self.clientToken
         params["threat"]=threatName
         params["timestamp"]=datetime.datetime.now()

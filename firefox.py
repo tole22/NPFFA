@@ -76,27 +76,32 @@ class AppModule(firefox.AppModule):
 			#ui.message("dir python")
 			self.script_url('u')
 			#ui.message(self.url)
-			url="http://"+self.url
+			url=self.url
 			from conexiones import parser
 			#from logHandler import log
 			#from shelve import Shelf
 			#log.info("Configura Aplicacion")
-			pagina=parser.parser(url)
+			
 			#ui.message("url")
 			#ui.message(url)
-			#ui.message("Direccion server")
+			pagina=parser.parser(url)
+			ui.message("Direccion server")
 			server=pagina.getServer()
-			#ui.message(server)
+			#server="192.168.1.110:8080"
+			ui.message(server)
 			token=pagina.getToken()
-			#ui.message("token")
+			#token="7be265de-a332-0d00-8d62-d98008c9ed06"
+			ui.message("token")
 			#ui.message(token)
 			self.server=server
 			self.token=token
 			ui.message("cargando Logger")
 			self.logger=logger.logger(self.server, self.token, False)
 			self.xpathInstance=xpathInstance.XpathInstance("")
+			self.xpathInstance.funciona()
+			#self.xpathInstance.getElementByXpath("","")
 			ui.message("Cargando finder")
-			self.finders=shared.finders.getFinders(self.logger,self.xpathInstance)
+			self.finders=shared.finders.getFinders(self.logger,self.xpathInstance,url)
 			ui.message("cargando dispacher")
 			self.dispacher=dispatcher2.dispatcher()
 			#import shelve
@@ -116,6 +121,7 @@ class AppModule(firefox.AppModule):
 			#log.error("iniciando", exc_info=True)
 			#log.warning("hola mundo")
 			ui.message("gainFocus")
+			self.config()
 			if obj.role==controlTypes.ROLE_FRAME:
 				self.config()
 			nextHandler()
@@ -184,7 +190,7 @@ class AppModule(firefox.AppModule):
 				#ui.message(hijo.IA2Attributes[key])
 			#	ui.message(str(self.xpathInstance.getProperty(key,hijo)))
 			#e#lse:
-			#	ui.message("no tiene")
+			ui.message("no tiene")
 			if dispatcher2.modoNavegacion():
 				ui.message(gesture.mainKeyName)
 				evento=self.dispacher.event("next",gesture.mainKeyName, gesture, self.event, self.url)

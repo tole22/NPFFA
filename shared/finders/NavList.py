@@ -15,18 +15,36 @@ from NVDAObjects import NVDAObject
 from interactionEvent.navigationByKeyL import NavigationByKeyL
 from accessibilityEvent.accessibilityEvent import AccessibilityEventNVDA
 class Finder(finder.Finder):
-    def __init__(self, name,logger,xpathInstance):
+    def __init__(self, name,logger,xpathInstance,url):
         self.minimunSteps=1
-        self.threatName="Navegacon entre listas"
+        self.threatName="NavigationBetweenLists"
         self.logger=logger
+        self.url=url
         self.xpathInstance=xpathInstance
         super(Finder,self).__init__(name)
         
     def flush(self):
         ui.message("estoy en flush")
         if len(self.listEvent)>self.minimunSteps:
-            ui.message("hay mas elemento")
-            params={"threatName":self.threatName}
+            #ui.message("mi rol es")
+            #ui.message(str(self.listEvent[-1].navegado.parent.role))
+            xpath=[]
+            for lista in self.listEvent:
+                xpath.append(self.xpathInstance.getElementXPath(lista.navegado))
+            #xpath=self.xpathInstance.getElementXPath(self.listEvent[-1].navegado)
+            #xpath=xpathInstance.whatSibling(self.listEvent[-1].navegado)
+            #ui.message(str(xpath))
+            list=[]
+            #ui.message("Los Evento son")
+            #for ele in self.listEvent:
+            #    ui.message("evento")
+            #    ui.message(str(ele.navegado.role))
+            #for key in self.listEvent[-1].navegado.IA2Attributes.keys():
+            #    ui.message(key)
+            #    ui.message(self.listEvent[-1].navegado.IA2Attributes[key])
+            #    list.append(key+":"+self.listEvent[1].navegado.IA2Attributes[key])
+            #params={"threatName":self.threatName,"url":self.url,"currentTop":self.listEvent[-1].navegado,"enlace":self.listEvent[-1].navegado.firstChild.next.value,"list":list,"xpaths":xpath}
+            params={"threatName":self.threatName,"url":self.url,"xpaths":xpath}
             eventoAccesibilidad=AccessibilityEventNVDA(self.threatName,[],params)
             self.logger.logEven(eventoAccesibilidad.name, eventoAccesibilidad.getReportLogger(), False)
             self.listEvent=[]
@@ -80,6 +98,7 @@ class Finder(finder.Finder):
     def approbes(self, event):
         try:
             ui.message("estoy en finder")
+            #ui.message("xpaht")
             #ui.message(str(self.calculateXpath(event.navegado)))
             if isinstance(event,NavigationByKeyL):
                 #print(event)
