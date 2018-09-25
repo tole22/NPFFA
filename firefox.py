@@ -52,8 +52,8 @@ class AppModule(firefox.AppModule):
 	def finderEvent(self,finderEvent,Event):
 		try:
 			for finder in finderEvent:
-				ui.message("procesando finder")
-				ui.message(finder.name)
+				#ui.message("procesando finder")
+				#ui.message(finder.name)
 				eventoAccesibilidad=finder.approbes(Event)
 				if eventoAccesibilidad:
 					ui.message(eventoAccesibilidad.name)
@@ -76,7 +76,7 @@ class AppModule(firefox.AppModule):
 			#ui.message("dir python")
 			self.script_url('u')
 			#ui.message(self.url)
-			url=self.url
+			url="http://"+ str(self.url)
 			from conexiones import parser
 			#from logHandler import log
 			#from shelve import Shelf
@@ -84,25 +84,27 @@ class AppModule(firefox.AppModule):
 			
 			#ui.message("url")
 			#ui.message(url)
+			
+			#ui.message("Direccion server")
 			pagina=parser.parser(url)
-			ui.message("Direccion server")
+			#ui.message(str(pagina.getURL()))
 			server=pagina.getServer()
 			#server="192.168.1.110:8080"
-			ui.message(server)
+			#ui.message(server)
 			token=pagina.getToken()
 			#token="7be265de-a332-0d00-8d62-d98008c9ed06"
-			ui.message("token")
+			#ui.message("token")
 			#ui.message(token)
 			self.server=server
 			self.token=token
-			ui.message("cargando Logger")
+			#ui.message("cargando Logger")
 			self.logger=logger.logger(self.server, self.token, False)
 			self.xpathInstance=xpathInstance.XpathInstance("")
 			self.xpathInstance.funciona()
 			#self.xpathInstance.getElementByXpath("","")
-			ui.message("Cargando finder")
+			#ui.message("Cargando finder")
 			self.finders=shared.finders.getFinders(self.logger,self.xpathInstance,url)
-			ui.message("cargando dispacher")
+			#ui.message("cargando dispacher")
 			self.dispacher=dispatcher2.dispatcher()
 			#import shelve
 			#fileName=os.path.dirname(os.path.abspath(__file__))+"/xpath.txt"
@@ -121,12 +123,11 @@ class AppModule(firefox.AppModule):
 			#log.error("iniciando", exc_info=True)
 			#log.warning("hola mundo")
 			ui.message("gainFocus")
-			self.config()
+			#self.config()
 			if obj.role==controlTypes.ROLE_FRAME:
 				self.config()
 			nextHandler()
 		except:
-			log.error("Error en gain focus")
 			ui.message("Error en gain focus")	
 								
 		
@@ -148,14 +149,14 @@ class AppModule(firefox.AppModule):
 		caso contrario lo agrega a la lista
 		'''
 		try:
-			ui.message("Agreando evento")
+			#ui.message("Agreando evento")
 			equivalent=False
 			if self.event:
 				ultimo=self.event[-1].navegado
-				ui.message("comparando ultimo evento")
+				#ui.message("comparando ultimo evento")
 				#if ultimo.__ne__(self,objNavegado):
 				if ultimo==event.navegado:
-					ui.message("iguales")
+					#ui.message("iguales")
 					equivalent=True
 				else:
 					ui.message("no iguales")
@@ -165,8 +166,8 @@ class AppModule(firefox.AppModule):
 				self.event.append(event)
 				self.finderEvent(self.finders,event)
 				#log.info(self.event)
-				ui.message("evento agregado")
-				animales=["perros","gatos"]
+				#ui.message("evento agregado")
+				#animales=["perros","gatos"]
 				#import pickle
    				#fileName=os.path.dirname(os.path.abspath(__file__))+"\dato.dat"
    				#file=open(fileName,mode="wb")
@@ -179,25 +180,13 @@ class AppModule(firefox.AppModule):
 			
 	def script_dispatchEventNext(self, gesture):
 		try:
-			#tobj=api.getForegroundObject()
-			#hijo=tobj.firstChild
-			#hijo=api.getNavigatorObject()
-			#ui.message("tobj")
-			#key="id"
-			#if key in hijo.IA2Attributes.keys():
-			#if self.xpathInstance.isProperty(key,hijo):
-			#	ui.message("si tiene")
-				#ui.message(hijo.IA2Attributes[key])
-			#	ui.message(str(self.xpathInstance.getProperty(key,hijo)))
-			#e#lse:
-			ui.message("no tiene")
 			if dispatcher2.modoNavegacion():
-				ui.message(gesture.mainKeyName)
+				#ui.message(gesture.mainKeyName)
 				evento=self.dispacher.event("next",gesture.mainKeyName, gesture, self.event, self.url)
-				ui.message("cargando evento")
+				#ui.message("cargando evento")
 				if evento:
 					self.newEvent(evento)
-				ui.message("tobj")
+				#ui.message("tobj")
 			else:
 				self.ignorar_gesto(gesture)
 		except:
@@ -206,9 +195,9 @@ class AppModule(firefox.AppModule):
 	def script_dispatchEventPrevious(self, gesture):
 		try:
 			if dispatcher2.modoNavegacion():
-				ui.message(gesture.mainKeyName)
+				#ui.message(gesture.mainKeyName)
 				evento=self.dispacher.event("previous",gesture.mainKeyName,gesture, self.event, self.url)
-				ui.message("cargando evento")
+				#ui.message("cargando evento")
 				if evento:
 					self.newEvent(evento)
 			else:
@@ -220,9 +209,9 @@ class AppModule(firefox.AppModule):
  			try:
  				token=configPlugin.getToken()
  				server=configPlugin.getServer()
- 				ui.message("presinaste t")
+ 				#ui.message("presinaste t")
  				directorio=configPlugin.directorio()
- 				ui.message(str(directorio))
+ 				#ui.message(str(directorio))
 		 	except:
 					ui.message("Error")
  		

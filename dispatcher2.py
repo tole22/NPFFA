@@ -11,6 +11,7 @@ import api
 import browseMode
 import speech
 import sys
+import treeInterceptorHandler
 #from finders.interactionEvent.eventoAccesibility import *
 from shared.finders.interactionEvent.eventoInteraccion import evento
 from shared.finders.interactionEvent.navigationByKeyH import NavigationByKeyH
@@ -45,14 +46,17 @@ class dispatcher():
 	
 	def event(self, direction, inputGesture, gesture, listEvent, url):
 		try: 
-			ui.message("el gesto es")
+			#ui.message("el gesto es")
 			ui.message(direction)
 			ui.message(gesture.mainKeyName)
-			previo=api.getNavigatorObject()
-			focoPrevio=api.getFocusObject()
-			navegadoPrevio=api.getNavigatorObject()
-			#inputGesture=str(gesture.mainKeyName)
-			obj=api.getNavigatorObject().treeInterceptor
+			if api.getNavigatorObject():
+				previo=api.getNavigatorObject()
+				obj=api.getNavigatorObject().treeInterceptor
+				navegadoPrevio=api.getNavigatorObject()
+			#ui.message("previuos")
+			if api.getFocusObject():
+				focoPrevio=api.getFocusObject()
+			#obj=treeInterceptorHandler.getTreeInterceptor(self.tree)
 			#ui.message(str(gesture))
 			if inputGesture=="h":
 				if direction=="next":
@@ -224,14 +228,14 @@ class dispatcher():
 	
 	def handlerEvent(self, inputKey, url):
 		try: 
-			ui.message("el gesto es ahora")
+			#ui.message("el gesto es ahora")
 			#inputGesture=str(gesture.mainKeyName)
 			obj=api.getNavigatorObject().treeInterceptor
 			foco=api.getFocusObject()
 			navegado=api.getNavigatorObject()
 			#ui.message(str(gesture))
 			if inputKey=="h":
-				ui.message("Evento h")
+				#ui.message("Evento h")
 				eventI=NavigationByKeyH("NavigationByKeyH", url, foco, navegado)
 				#return NavigationByKeyH("NavigationByKeyH",direction, url,gesture)
 			if inputKey=="l":

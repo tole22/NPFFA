@@ -44,7 +44,10 @@ class Finder(finder.Finder):
             #    ui.message(self.listEvent[-1].navegado.IA2Attributes[key])
             #    list.append(key+":"+self.listEvent[1].navegado.IA2Attributes[key])
             #params={"threatName":self.threatName,"url":self.url,"currentTop":self.listEvent[-1].navegado,"enlace":self.listEvent[-1].navegado.firstChild.next.value,"list":list,"xpaths":xpath}
-            params={"threatName":self.threatName,"url":self.url,"xpaths":xpath}
+            xpaths="&"
+            for xp in xpath:
+                xpaths=xpaths + str(xp) + "&"
+            params={"threatName":self.threatName,"url":self.url,"xpaths":xpaths}
             eventoAccesibilidad=AccessibilityEventNVDA(self.threatName,[],params)
             self.logger.logEven(eventoAccesibilidad.name, eventoAccesibilidad.getReportLogger(), False)
             self.listEvent=[]

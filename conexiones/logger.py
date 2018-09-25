@@ -11,6 +11,7 @@ import datetime
 #import urllib.request
 #import urllib2
 import ui
+import time
 
 
 
@@ -45,7 +46,8 @@ class logger(object):
         parameters={"token":self.clientToken, "threat":threatName}
         params["token"]=self.clientToken
         params["threat"]=threatName
-        params["timestamp"]=datetime.datetime.now()
+        params["timestamp"]=int(time.time()*1000)
+        #params["timestamp"]=datetime.datetime.now()
         #params=params.update(parameters)
         ui.message("por buscar xpath")
         #if params["xpath"]:
