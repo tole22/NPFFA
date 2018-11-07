@@ -9,7 +9,9 @@ import speech
 import controlTypes
 from NVDAObjects import NVDAObject
 
-
+def tagHtml(role):
+    return XpathInstance("").tagHtml(role)
+    
 class XpathInstance(object):
     '''
     classdocs
@@ -20,9 +22,6 @@ class XpathInstance(object):
         Constructor
         '''
         self.params=params
-    
-    def funciona(self):
-        ui.message("funciona")
     
     def getElementByXpath(self,path,url):
         ui.message("si ejecuta")
@@ -38,14 +37,14 @@ class XpathInstance(object):
     def whatSibling(self,element):
         try:
             #return (element.role)
-            ui.message("Ejucuta whatSibling ")
+            #ui.message("Ejucuta whatSibling ")
             index=1
             #return str(len(element.parent.parent.children))
             child=element.parent.firstChild
             while child and not child==element:
                 if child.role==element.role:
                     index+=1
-                ui.message(str(child.role))
+                #ui.message(str(child.role))
                 child=child.next
             if index>1:
                 return("["+str(index)+"]")
@@ -71,17 +70,17 @@ class XpathInstance(object):
             tag["6"]="6" #ROLE_RADIOBUTTON=6
             tag["7"]="7" #ROLE_STATICTEXT=7
             tag["8"]="8" #ROLE_EDITABLETEXT=8
-            tag["9"]="9" #ROLE_BUTTON=9
+            tag["9"]="input" #ROLE_BUTTON=9
             tag["10"]="10" #ROLE_MENUBAR=10
             tag["11"]="11" #ROLE_MENUITEM=11
             tag["12"]="12" #ROLE_POPUPMENU=12
             tag["13"]="13" #ROLE_COMBOBOX=13
             tag["14"]="ul" #ROLE_LIST=14
-            tag["15"]="15" #ROLE_LISTITEM=15
+            tag["15"]="li" #ROLE_LISTITEM=15
             tag["16"]="16" #ROLE_GRAPHIC=16
             tag["17"]="17" #ROLE_HELPBALLOON=17
             tag["18"]="18" #ROLE_TOOLTIP=18
-            tag["19"]="19" #ROLE_LINK=19
+            tag["19"]="a" #ROLE_LINK=19
             tag["20"]="20" #ROLE_TREEVIEW=20
             tag["21"]="21" #ROLE_TREEVIEWITEM=21
             tag["22"]="22" #ROLE_TAB=22
@@ -101,18 +100,18 @@ class XpathInstance(object):
             tag["36"]="36" #ROLE_DROPDOWNBUTTON=36
             tag["37"]="37" #ROLE_CLOCK=37
             tag["38"]="38" #ROLE_SEPARATOR=38
-            tag["39"]="39" #ROLE_FORM=39
-            tag["40"]="40" #ROLE_HEADING=40
-            tag["41"]="41" #ROLE_HEADING1=41
-            tag["42"]="42" #ROLE_HEADING2=42
-            tag["43"]="43" #ROLE_HEADING3=43
-            tag["44"]="44" #ROLE_HEADING4=44
-            tag["45"]="45" #ROLE_HEADING5=45
-            tag["46"]="46" #ROLE_HEADING6=46
-            tag["47"]="47" #ROLE_PARAGRAPH=47
+            tag["39"]="form" #ROLE_FORM=39
+            tag["40"]="h" #ROLE_HEADING=40
+            tag["41"]="h1" #ROLE_HEADING1=41
+            tag["42"]="h2" #ROLE_HEADING2=42
+            tag["43"]="h3" #ROLE_HEADING3=43
+            tag["44"]="h4" #ROLE_HEADING4=44
+            tag["45"]="h5" #ROLE_HEADING5=45
+            tag["46"]="h6" #ROLE_HEADING6=46
+            tag["47"]="p" #ROLE_PARAGRAPH=47
             tag["48"]="48" #ROLE_BLOCKQUOTE=48
-            tag["49"]="49" #ROLE_TABLEHEADER=49
-            tag["50"]="50" #ROLE_TABLEBODY=50
+            tag["49"]="thead" #ROLE_TABLEHEADER=49
+            tag["50"]="tbody" #ROLE_TABLEBODY=50
             tag["51"]="51" #ROLE_TABLEFOOTER=51
             tag["52"]="52" #ROLE_DOCUMENT=52
             tag["53"]="53" #ROLE_ANIMATION=53
@@ -134,7 +133,7 @@ class XpathInstance(object):
             tag["70"]="70" #ROLE_HEADER=70
             tag["71"]="71" #ROLE_IMAGEMAP=71
             tag["72"]="72" #ROLE_INPUTWINDOW=72
-            tag["73"]="73" #ROLE_LABEL=73
+            tag["73"]="label" #ROLE_LABEL=73
             tag["74"]="74" #ROLE_NOTE=74
             tag["75"]="75" #ROLE_PAGE=75
             tag["76"]="75" #ROLE_RADIOMENUITEM=76
@@ -214,20 +213,33 @@ class XpathInstance(object):
     
     def whatParent(self,element):
         try:
+            ui.message("El rol xpath es")
+            ui.message(str(element.role))
+            rolElement="/"+self.tagHtml(str(element.role))
+            #if isinstance(element,NavigationByKeyL):
+            #    ui.message("Es intancia")
+            #    rolElement=""
+            #else:
+            #    ui.message("no es intancia")
             paths=[]
             #paths.append(element.role)
-            padre=element.parent
-            while padre and not padre.role==controlTypes.ROLE_DOCUMENT:
-                cant=self.whatSibling(padre)
-                tagHtml=self.tagHtml(padre.role)
-                paths.append(str(tagHtml)+ str(cant))
-                padre=padre.parent
+            if element.parent:
+                padre=element.parent
+                #ui.message("tiene padre")
+                while padre and not padre.role==controlTypes.ROLE_DOCUMENT:
+                    cant=self.whatSibling(padre)
+                    tagHtml=self.tagHtml(padre.role)
+                    paths.append(str(tagHtml)+ str(cant))
+                    padre=padre.parent
+            else:
+                ui.message("no padre")
             tag=[]
+            cant=self.whatSibling(element)
             cadena=""
             for element in reversed(paths):
                 tag.append(element)
                 cadena=cadena+"/"+str(element)
-            return("/html/body"+str(cadena))
+            return("/html/body"+str(cadena)+rolElement+str(cant))
         except:
             cadena=""
             for element in reversed(paths):
@@ -245,7 +257,7 @@ class XpathInstance(object):
                 index=0
                 sibling=element.previous
                 #speech.speakObject(sibling)
-                ui.message("calculando TreeXpath")
+                #ui.message("calculando TreeXpath")
                 #ui.message(str(sibling.role))
                 #ui.message("el parent es")
                 #speech.speakObject(element.parent)
@@ -258,8 +270,8 @@ class XpathInstance(object):
                 #ui.message("nombre")
                 #ui.message(element.name)
                 while sibling:
-                    ui.message("El hermano rol")
-                    ui.message(str(sibling.role))
+                    #ui.message("El hermano rol")
+                    #ui.message(str(sibling.role))
                     if sibling.role==controlTypes.ROLE_DOCUMENT:#bueb
                         #ui.message("llego al final")
                         continue
@@ -278,28 +290,28 @@ class XpathInstance(object):
                 tagName=str(element.role)
                 #ui.message("tagName+pathIndex")
                 #ui.message(str(tagName+pathIndex))
-                ui.message("agrega")
-                ui.message(tagName+str(pathIndex))
+                #ui.message("agrega")
+                #ui.message(tagName+str(pathIndex))
                 paths.append(tagName+str(pathIndex))
                 element=element.parent
-                ui.message("el padre es rol")
-                ui.message(str(element.role))
+                #ui.message("el padre es rol")
+                #ui.message(str(element.role))
             #ui.message(str(paths))
             return(str(paths))
         except:
             ui.message("Error en xpath")
-            ui.message("las contantes son")
+            #ui.message("las contantes son")
             ui.message(str(len(controlTypes.CONSTANT)))
             return None
     
     def getElementXPath(self,element):
         try:
-            ui.message("ejecutando getElementXPath")
+            #ui.message("ejecutando getElementXPath")
             key="id"
             if key in element.IA2Attributes.keys():
-                ui.message("el id es")
-                id=str('//*[@id="'+str(element.IA2Attributes[key]))
-                id=id+'"]'
+                #ui.message("el id es")
+                id=str('//*[@id='+str(element.IA2Attributes[key]))
+                id=id+']'
                 return id
             else:
                 return self.getElementTreeXPath(element)

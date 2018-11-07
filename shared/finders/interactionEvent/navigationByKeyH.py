@@ -7,18 +7,16 @@
 from navigationByKey import NavigationByKey
 class NavigationByKeyH(NavigationByKey):
         
-    def __init__(self, name, url, foco ,navegado):
+    def __init__(self, name, url,foco, navegado,xpathCalc):
         '''
         Constructor
         '''
-        super(NavigationByKeyH,self).__init__(name, url, foco, navegado)
+        self.setXpath(xpathCalc.getElementXPath(navegado))
+        super(NavigationByKeyH,self).__init__(name, url, foco, navegado,xpathCalc)
         
     def __str__(self, *args, **kwargs):
         cadena="evento: " + self.name
         return cadena
-
-class otra():
-    pass
        
 if __name__== '__main__':
     x= NavigationByKeyH("evento h","foco","navegado","www.google.com")

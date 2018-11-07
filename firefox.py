@@ -21,7 +21,7 @@ import gui
 import wx
 import os
 import tones
-from datetime import datetime
+import datetime
 from threading import Timer
 import textInfos
 import browseMode
@@ -33,6 +33,8 @@ import dispatcher2
 import sys
 import browseMode
 import shared
+from shared.valizas import eventoValiza
+
 
 addonHandler.initTranslation()
 
@@ -40,8 +42,15 @@ class AppModule(firefox.AppModule):
 	
 	finders=[]
 	event=[]
+	roles=[]
+	thread=None
 	def event_NVDAObject_init(self,obj):
 		try:
+			#ui.message("init")
+			#ui.message(str(obj.role))
+			#ui.message("role")
+			#ui.message(str(xpathInstance.tagHtml(obj.role)))
+			self.roles.append(str(obj.role))
 			x=1
 		except:
 			ui.message("Error en init")
@@ -52,95 +61,87 @@ class AppModule(firefox.AppModule):
 	def finderEvent(self,finderEvent,Event):
 		try:
 			for finder in finderEvent:
-				#ui.message("procesando finder")
-				#ui.message(finder.name)
 				eventoAccesibilidad=finder.approbes(Event)
 				if eventoAccesibilidad:
 					ui.message(eventoAccesibilidad.name)
-				#if finder.approbes(listEvent):
-				#	eventoAccesibilidad=finder.approbes(listEvent)
-				#	self.logger.logEven(eventoAccesibilidad.name, eventoAccesibilidad.getReportLogger(), False)
-				
 		except:
 			ui.message("Error finder event")						
 		
-	def config(self):
+	def config(self,obj):
 		try:
 			ui.message("Cargar configuracion")
-			#ui.message("dir python")
-			#ui.message(configPlugin.getDirPython())
 			dirPython=configPlugin.getDirPython()
 			sys.path.append(dirPython)
 			self.finders=[]
 			self.event=[]
-			#ui.message("dir python")
+			ui.message("carga")
+			#if not self.thread:
+			#	self.thread=self.newHilo()
+			ui.message("dir python")
 			self.script_url('u')
-			#ui.message(self.url)
 			url="http://"+ str(self.url)
+			ui.message("carga")
 			from conexiones import parser
-			#from logHandler import log
-			#from shelve import Shelf
-			#log.info("Configura Aplicacion")
-			
-			#ui.message("url")
-			#ui.message(url)
-			
-			#ui.message("Direccion server")
+			ui.message("carga")
 			pagina=parser.parser(url)
-			#ui.message(str(pagina.getURL()))
 			server=pagina.getServer()
-			#server="192.168.1.110:8080"
-			#ui.message(server)
 			token=pagina.getToken()
-			#token="7be265de-a332-0d00-8d62-d98008c9ed06"
-			#ui.message("token")
-			#ui.message(token)
 			self.server=server
 			self.token=token
-			#ui.message("cargando Logger")
 			self.logger=logger.logger(self.server, self.token, False)
 			self.xpathInstance=xpathInstance.XpathInstance("")
-			self.xpathInstance.funciona()
-			#self.xpathInstance.getElementByXpath("","")
-			#ui.message("Cargando finder")
 			self.finders=shared.finders.getFinders(self.logger,self.xpathInstance,url)
-			#ui.message("cargando dispacher")
 			self.dispacher=dispatcher2.dispatcher()
-			#import shelve
-			#fileName=os.path.dirname(os.path.abspath(__file__))+"/xpath.txt"
-			#ui.message(fileName)
-   			#she=shelve.open(fileName)
-   			#animales=["perros","gatos"]
-   			#she["event"]=animales
-   			#she.close()
-			ui.message("configuracion bien cargada")
+			ui.message("Bien cargada")
 		except:
-			log.error("Error en config")
 			ui.message("Error en config")
 	
+	def procesarCola(self):
+		try:
+			if len(self.event)>0:
+				timeActual=datetime.datetime.now()
+				timeEvent=self.event[-1].getTimeStamp()
+				eps=timeActual-timeEvent
+				if eps>datetime.timedelta(seconds=20):
+					for finder in self.finders:
+						valiza=eventoValiza("valizaCierre",self.url)
+						finder.valiza(valiza)
+						self.reset()
+			self.thread=self.newHilo()
+		except:
+			ui.message("error en procesarCola")
+	
+	def newHilo(self):
+		try:
+			import threading
+			hilo=threading.Timer(40.0, self.procesarCola)
+			hilo.setName("Procesador de Colas")
+			hilo.start()
+			return hilo
+		except:
+			ui.message("error en new hilo")
+		
 	def event_gainFocus(self, obj, nextHandler):
 		try:
-			#log.error("iniciando", exc_info=True)
-			#log.warning("hola mundo")
-			ui.message("gainFocus")
-			#self.config()
+			if obj.role==controlTypes.ROLE_DOCUMENT:
+				self.procesarCola()
 			if obj.role==controlTypes.ROLE_FRAME:
-				self.config()
+				self.config(obj)
 			nextHandler()
 		except:
 			ui.message("Error en gain focus")	
-								
+	
+	def reset(self):
+		self.event=[]						
 		
  	def modoNavegacion(self):
  		try:
- 			#log.info("Verifica Modo de Navegacion")
  			focus = api.getFocusObject()
  			vbuf=focus.treeInterceptor
  			if vbuf.passThrough:
  				return False
  			return True
  	 	except:
- 	 		#log.error("Verifica Modo de Navegacion")
 			ui.message("Error modo navegacion")
  		
  	def newEvent(self,event):
@@ -149,45 +150,26 @@ class AppModule(firefox.AppModule):
 		caso contrario lo agrega a la lista
 		'''
 		try:
-			#ui.message("Agreando evento")
 			equivalent=False
 			if self.event:
 				ultimo=self.event[-1].navegado
-				#ui.message("comparando ultimo evento")
-				#if ultimo.__ne__(self,objNavegado):
 				if ultimo==event.navegado:
-					#ui.message("iguales")
 					equivalent=True
-				else:
-					ui.message("no iguales")
 			if not equivalent:
-				#if isinstance(event,NavigationByKeyH):
-				#	ui.message("es insancia de NavigationByKeyH ")
 				self.event.append(event)
-				self.finderEvent(self.finders,event)
-				#log.info(self.event)
-				#ui.message("evento agregado")
-				#animales=["perros","gatos"]
-				#import pickle
-   				#fileName=os.path.dirname(os.path.abspath(__file__))+"\dato.dat"
-   				#file=open(fileName,mode="wb")
-   				#my_pickled_event=pickle.dump(event,file)
-   				#file.close()
-				
-   					
+				self.finderEvent(self.finders,event)		
 		except:
 			ui.message("Error al cargar evento")
 			
 	def script_dispatchEventNext(self, gesture):
-		try:
+		try:	
+			ui.message("despachar evento")
 			if dispatcher2.modoNavegacion():
-				#ui.message(gesture.mainKeyName)
 				evento=self.dispacher.event("next",gesture.mainKeyName, gesture, self.event, self.url)
-				#ui.message("cargando evento")
 				if evento:
 					self.newEvent(evento)
-				#ui.message("tobj")
 			else:
+				ui.message("se ignora evento")
 				self.ignorar_gesto(gesture)
 		except:
 			ui.message("Error en evento")		
@@ -195,9 +177,7 @@ class AppModule(firefox.AppModule):
 	def script_dispatchEventPrevious(self, gesture):
 		try:
 			if dispatcher2.modoNavegacion():
-				#ui.message(gesture.mainKeyName)
 				evento=self.dispacher.event("previous",gesture.mainKeyName,gesture, self.event, self.url)
-				#ui.message("cargando evento")
 				if evento:
 					self.newEvent(evento)
 			else:
@@ -209,14 +189,20 @@ class AppModule(firefox.AppModule):
  			try:
  				token=configPlugin.getToken()
  				server=configPlugin.getServer()
- 				#ui.message("presinaste t")
  				directorio=configPlugin.directorio()
- 				#ui.message(str(directorio))
 		 	except:
 					ui.message("Error")
+ 	
+ 	def script_procesar(self, gesture):
+ 		try:
+ 			self.procesarCola()
+ 		except:
+ 			ui.message("Error en procesar")
  		
  	def script_status(self, gesture):
 		try:
+			params={"threatName":"roles","url":self.url,"xpaths":self.roles}
+			self.logger.logEven("roles",params,False)
 			ui.message("Cantindad de Buscadores")
 			ui.message(str(len(self.finders)))
 			focus = api.getFocusObject()
@@ -230,7 +216,8 @@ class AppModule(firefox.AppModule):
 			for f in self.finders:
 				ui.message(f.name)
 				ui.message(str(len(f.listEvent)))
-			#self.finderEvent(self.finders, self.event)
+			ui.message("tatal de eventos")
+			ui.message(str(len(self.event)))
 		except:
 			ui.message("Error en status")
 			
@@ -250,14 +237,9 @@ class AppModule(firefox.AppModule):
 					securInfo = "%s, %s" % (owner, securInfo) if owner else securInfo
 			except:
 				pass
-			#TRANSLATORS: this connection is using http, not https
-			securInfo  = _("Insecure connection") if not securInfo   else securInfo  
-			url = secInfoButton.next.value
-			#ui.message("direccion")
+			securInfo  = _("Insecure connection") if not securInfo   else securInfo
+			url=secInfoButton.next.value  
 			self.url=url
-			#ui.message(self.url)
-			#ui.message("%s (%s)" % (url, securInfo))
-		#ui.message (_("Direccion No Disponible"))
 		
 	def searchObject(self, path):
 		obj = api.getForegroundObject()
@@ -343,6 +325,7 @@ class AppModule(firefox.AppModule):
 		"kb:shift+5": "dispatchEventPrevious",
 		"kb:6": "dispatchEventNext",
 		"kb:shift+6": "dispatchEventPrevious",
-		"kb:p": "status"
+		"kb:p": "status",
+		"kb:a": "script_url"
 	}
 	

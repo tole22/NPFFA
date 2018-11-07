@@ -6,11 +6,12 @@
 #Preferencia /modo navegagacion/todo focos =false
 from navigationByKey import NavigationByKey
 class NavigationByKeyK(NavigationByKey):
-    def __init__(self, name, url):
+    def __init__(self, name, url,foco, navegado,xpathCalc):
         '''
         Constructor
         '''
-        super(NavigationByKeyK,self).__init__(name, url, foco ,navegado)
+        self.setXpath(xpathCalc.getElementXPath(navegado))
+        super(NavigationByKeyK,self).__init__(name, url, foco, navegado,xpathCalc)
 if __name__== '__main__':
     x= NavigationByKeyL("evento L","foco","navegado","www.google.com")
     print(x.__str__())

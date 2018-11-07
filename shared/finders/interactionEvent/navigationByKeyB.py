@@ -6,11 +6,11 @@
 #Preferencia /modo navegagacion/todo focos =false
 from navigationByKey import NavigationByKey
 class NavigationByKeyB(NavigationByKey):
-    def __init__(self, name, url, foco ,navegado):
+    def __init__(self, name, url,foco, navegado,xpathCalc):
         '''
         Constructor
         '''
-        super(NavigationByKeyB,self).__init__(name, url, foco ,navegado)
+        super(NavigationByKeyB,self).__init__(name, url, foco, navegado,xpathCalc)
         
     def __str__(self, *args, **kwargs):
         cadena="name: " + self.name

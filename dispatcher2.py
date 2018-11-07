@@ -12,7 +12,8 @@ import browseMode
 import speech
 import sys
 import treeInterceptorHandler
-#from finders.interactionEvent.eventoAccesibility import *
+from treeInterceptorHandler import TreeInterceptor
+from conexiones import xpathInstance
 from shared.finders.interactionEvent.eventoInteraccion import evento
 from shared.finders.interactionEvent.navigationByKeyH import NavigationByKeyH
 from shared.finders.interactionEvent.navigationByKeyL import NavigationByKeyL
@@ -41,23 +42,19 @@ def modoNavegacion():
  	 	except:
 			ui.message("Error modo navegacion")
 
-
 class dispatcher():
+	def __init__(self):
+		pass
 	
 	def event(self, direction, inputGesture, gesture, listEvent, url):
 		try: 
-			#ui.message("el gesto es")
-			ui.message(direction)
-			ui.message(gesture.mainKeyName)
 			if api.getNavigatorObject():
 				previo=api.getNavigatorObject()
 				obj=api.getNavigatorObject().treeInterceptor
 				navegadoPrevio=api.getNavigatorObject()
-			#ui.message("previuos")
 			if api.getFocusObject():
 				focoPrevio=api.getFocusObject()
-			#obj=treeInterceptorHandler.getTreeInterceptor(self.tree)
-			#ui.message(str(gesture))
+			ui.message("event")
 			if inputGesture=="h":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextHeading(obj,gesture)
@@ -68,206 +65,174 @@ class dispatcher():
 					browseMode.BrowseModeTreeInterceptor.script_nextList(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousList(obj,gesture)
-				#return NavigationByKeyL("NavigationByKeyL", url)
 			if inputGesture=="i":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextListItem(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousListItem(obj,gesture)
-				#return None
 			if inputGesture=="t":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextTable(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousTable(obj,gesture)
-				#return NavigationByKeyT("Presionate t"," wwww.google.com")
 			if inputGesture=="k":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextLink(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousLink(obj,gesture)
-				#return None
 			if inputGesture=="n":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextNotLinkBlock(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousNotLinkBlock(obj,gesture)
-				#return None
 			if inputGesture=="f":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextFormField(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previoustFormField(obj,gesture)
-				#return None
 			if inputGesture=="u":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextUnvisitedLink(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousUnvisitedLink(obj,gesture)
-				#return None
 			if inputGesture=="v":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextVisitedLink(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousVisitedLink(obj,gesture)
-				#return None
 			if inputGesture=="e":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextEdit(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousEdit(obj,gesture)
-				#return None
 			if inputGesture=="b":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextButton(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousButton(obj,gesture)
-				#return None
 			if inputGesture=="x":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextCheckBox(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousCheckBox(obj,gesture)
-				#return None
 			if inputGesture=="c":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextComboBox(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousComboBox(obj,gesture)
-				#return None
 			if inputGesture=="r":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextRadioButton(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousRadioButton(obj,gesture)
-				#return None
 			if inputGesture=="q":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextBlockQuote(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousBlockQuote(obj,gesture)
-				#return None
 			if inputGesture=="s":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextSeparator(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousSeparator(obj,gesture)
-				#return None
 			if inputGesture=="m":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextFrame(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousFrame(obj,gesture)
-				#return None
 			if inputGesture=="g":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextGraphic(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousGraphic(obj,gesture)
-				#return None
 			if inputGesture=="d":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextLandmark(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousLandmark(obj,gesture)
-				#return None
 			if inputGesture=="o":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextEmbeddedObject(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousEmbeddedObject(obj,gesture)
-				#return None
 			if inputGesture=="1":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextHeading1(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousHeading1(obj,gesture)
-				#return None
 			if inputGesture=="2":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextHeading2(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousHeading2(obj,gesture)
-				#return None
 			if inputGesture=="3":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextHeading3(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousHeading3(obj,gesture)
-				#return None
 			if inputGesture=="4":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextHeading4(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousHeading4(obj,gesture)
-				#return None
 			if inputGesture=="5":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextHeading5(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousHeading5(obj,gesture)
-				#return None
 			if inputGesture=="6":
 				if direction=="next":
 					browseMode.BrowseModeTreeInterceptor.script_nextHeading6(obj,gesture)
 				if direction=="previous":
 					browseMode.BrowseModeTreeInterceptor.script_previousHeading6(obj,gesture)
-				#return None
 			if previo==api.getNavigatorObject():
-				ui.message("No hay navegacion")
 				return None #No se produjo la navegacion
 			else:
 				eventoI=self.handlerEvent(inputGesture, url)
 				eventoI.previo(focoPrevio,navegadoPrevio)
 				return eventoI
-			  #Si se produjo la navegacion
-			#ui.message("no existe class evento para este gesto")
 		except:
 			ui.message("Error al despacher evento")
 			
 	
 	def handlerEvent(self, inputKey, url):
 		try: 
-			#ui.message("el gesto es ahora")
-			#inputGesture=str(gesture.mainKeyName)
 			obj=api.getNavigatorObject().treeInterceptor
 			foco=api.getFocusObject()
 			navegado=api.getNavigatorObject()
-			#ui.message(str(gesture))
+			xpathCalc=xpathInstance.XpathInstance("")
 			if inputKey=="h":
-				#ui.message("Evento h")
-				eventI=NavigationByKeyH("NavigationByKeyH", url, foco, navegado)
-				#return NavigationByKeyH("NavigationByKeyH",direction, url,gesture)
+				eventI=NavigationByKeyH("NavigationByKeyH", url, foco, navegado, xpathCalc)
 			if inputKey=="l":
-				eventI= NavigationByKeyL("NavigationByKeyL", url, foco, navegado)
+				eventI= NavigationByKeyL("NavigationByKeyL", url, foco, navegado,xpathCalc)
 			if inputKey=="i":
-				eventI= NavigationByKeyI("NavigationByKeyI", url, foco, navegado)
+				eventI= NavigationByKeyI("NavigationByKeyI", url, foco, navegado,xpathCalc)
 			if inputKey=="t":
-				eventI= NavigationByKeyT("NavigationByKeyt", url, foco, navegado)
+				eventI= NavigationByKeyT("NavigationByKeyt", url, foco, navegado,xpathCalc)
 			if inputKey=="k":
-				eventI= NavigationByKeyK("NavigationByKeyk", url, foco, navegado)
+				eventI= NavigationByKeyK("NavigationByKeyk", url, foco, navegado,xpathCalc)
 			if inputKey=="n":
-				eventI=  NavigationByKeyN("NavigationByKeyN", url, foco, navegado)
+				eventI= NavigationByKeyN("NavigationByKeyN", url, foco, navegado,xpathCalc)
 			if inputKey=="f":
-				eventI=  NavigationByKeyF("NavigationByKeyF", url, foco, navegado)
+				eventI= NavigationByKeyF("NavigationByKeyF", url, foco, navegado,xpathCalc)
 			if inputKey=="u":
-				eventI=  NavigationByKeyU("NavigationByKeyU", url, foco, navegado)
+				eventI= NavigationByKeyU("NavigationByKeyU", url, foco, navegado,xpathCalc)
 			if inputKey=="v":
-				eventI=  NavigationByKeyV("NavigationByKeyV", url, foco, navegado)
+				eventI= NavigationByKeyV("NavigationByKeyV", url, foco, navegado,xpathCalc)
 			if inputKey=="e":
-				eventI= NavigationByKeyE("NavigationByKeyE", url, foco, navegado)
+				eventI= NavigationByKeyE("NavigationByKeyE", url, foco, navegado,xpathCalc)
 			if inputKey=="b":
-				eventI= NavigationByKeyB("NavigationByKeyB", url, foco, navegado)
+				eventI= NavigationByKeyB("NavigationByKeyB", url, foco, navegado,xpathCalc)
 			if inputKey=="x":
-				eventI= NavigationByKeyX("NavigationByKeyX", url, foco, navegado)
+				eventI= NavigationByKeyX("NavigationByKeyX", url, foco, navegado,xpathCalc)
 			if inputKey=="c":
-				eventI= NavigationByKeyC("NavigationByKeyC", url, foco, navegado)
+				eventI= NavigationByKeyC("NavigationByKeyC", url, foco, navegado,xpathCalc)
 			if inputKey=="r":
-				eventI= NavigationByKeyR("NavigationByKeyC", url, foco, navegado)
+				eventI= NavigationByKeyR("NavigationByKeyC", url, foco, navegado,xpathCalc)
 			if inputKey=="q":
-				eventI= NavigationByKeyQ("NavigationByKeyQ", url, foco, navegado)
+				eventI= NavigationByKeyQ("NavigationByKeyQ", url, foco, navegado,xpathCalc)
 			if inputKey=="s":
-				eventI= NavigationByKeyS("NavigationByKeyS", url, foco, navegado)
+				eventI= NavigationByKeyS("NavigationByKeyS", url, foco, navegado,xpathCalc)
 			if inputKey=="m":
 				return None
 			if inputKey=="g":
@@ -277,26 +242,17 @@ class dispatcher():
 			if inputKey=="o":
 				return None
 			if inputKey=="1":
-				return None
+				eventI=NavigationByKeyH("NavigationByKeyH", url, foco, navegado, xpathCalc)
 			if inputKey=="2":
-				return None
+				eventI=NavigationByKeyH("NavigationByKeyH", url, foco, navegado, xpathCalc)
 			if inputKey=="3":
-				return None
+				eventI=NavigationByKeyH("NavigationByKeyH", url, foco, navegado, xpathCalc)
 			if inputKey=="4":
-				return None
+				eventI=NavigationByKeyH("NavigationByKeyH", url, foco, navegado, xpathCalc)
 			if inputKey=="5":
-				return None
+				eventI=NavigationByKeyH("NavigationByKeyH", url, foco, navegado, xpathCalc)
 			if inputKey=="6":
-				return None
-			#ui.message("no existe class evento para este gesto")
-			#f=open('xpath.txt','w')
-			#f.writ('hola')
-			#f.close()
+				eventI=NavigationByKeyH("NavigationByKeyH", url, foco, navegado, xpathCalc)
 			return eventI
 		except:
 			ui.message("Error al crear el evento de interaccion")
-		
-
-if __name__== '__main__':
-	x=dispacher()
-	x.event("h")

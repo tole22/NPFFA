@@ -7,11 +7,11 @@
 from navigationByKey import NavigationByKey
 import api
 class NavigationByKeyE(NavigationByKey):
-    def __init__(self, name, url):
+    def __init__(self, name, url,foco, navegado,xpathCalc):
         '''
         Constructor
         '''
-        super(NavigationByKeyE,self).__init__(name, url, foco ,navegado)
+        super(NavigationByKeyE,self).__init__(name, url, foco, navegado,xpathCalc)
         
     def __str__(self, *args, **kwargs):
         cadena="name: " + self.name

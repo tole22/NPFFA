@@ -15,6 +15,14 @@ class evento(object):
         self.url=url
         self.timeStamp= datetime.datetime.now()
         
+    def getTimeStamp(self):
+        return self.timeStamp
+    
+    def getXpath(self):
+        return self.xpath
+        
+    def setXpath(self,xpath):
+        self.xpath=xpath
         
     def previo(self,foco,navegado):
         self.focoPrevio=foco

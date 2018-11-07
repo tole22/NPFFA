@@ -9,12 +9,13 @@ class NavigationByKey(evento):
     '''
     constructor
     '''
-    def __init__(self, name, url, foco, navegado):
+    def __init__(self, name, url, foco, navegado, xpathCalc):
         '''
         Constructor
         '''
         self.foco=foco
         self.navegado=navegado
+        #self.setXpath(xpathCalc.getElementXPath(navegado))
         super(NavigationByKey,self).__init__(name,url)
     
     
@@ -33,6 +34,9 @@ class NavigationByKey(evento):
     
     def _setNavegado(self,navegado):
         self.navegado=navegado
+        
+    def getChildCount(self):
+        return 0
     
 if __name__== '__main__':
     x= NavigationByKey("evento1","foco","navegado","www.google.com")

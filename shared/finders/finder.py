@@ -4,12 +4,7 @@
 #Copyright (C) 2018 Fernando Durgam <fdurgam@gmail.com>
 #Preferencias/Opciones de Cursor de Revision seguir foco del sistema=false
 #Preferencia /modo navegagacion/todo focos =false
-
-def getFinders():
-	finders=[]
-	finders.append(Finder(""))
-	finders.append(Finder(""))
-	return finders
+import ui
 	
 class Finder(object):
     '''
@@ -22,16 +17,26 @@ class Finder(object):
         self.name=name
         self.listEvent=[]
         
-       
+    def valiza(self,valiza):
+        try:
+            self.flush()
+            self.reset()
+        except:
+            ui.message("error en valiza") 
+        
     def __str__(self, *args, **kwargs):
         cadena="name: " + self.name
         return cadena
+  
     
-    def getElementByXpath(self,path):
-        pass 
-    
-    def go(self):
+    def approbes(self, event):
     	pass
+    
+    def flush(self):
+    	pass
+    
+    def reset(self):
+        self.listEvent=[]
 
 if __name__== '__main__':
 	x=getFinders()
